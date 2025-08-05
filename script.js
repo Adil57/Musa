@@ -18,16 +18,21 @@ document.addEventListener("DOMContentLoaded", () => {
             }, {});
 
             let photosHTML = '';
-            const photoLinks = data.items[0].fields.images; // Assuming only one entry for profile photos
 
-            if (photoLinks && Array.isArray(photoLinks)) {
-                photoLinks.forEach((link, index) => {
-                    if (link && link.sys && assets[link.sys.id]) {
-                        const imageUrl = 'https:' + assets[link.sys.id];
-                        photosHTML += `<img src="${imageUrl}" alt="Musa's Photo ${index + 1}" class="profile-pic pic${index + 1}">`;
-                    }
-                });
-            }
+            // --- THE FINAL FIX IS HERE ---
+            // Ab yeh code har entry ke andar multiple photos ko bhi handle karega
+            data.items.forEach(item => {
+                const photoLinks = item.fields.images; // Field ID is 'images'
+                if (photoLinks && Array.isArray(photoLinks)) {
+                    photoLinks.forEach((link, index) => {
+                        if (link && link.sys && assets[link.sys.id]) {
+                            const imageUrl = 'https:' + assets[link.sys.id];
+                            // CSS classes will be pic1, pic2, etc.
+                            photosHTML += `<img src="${imageUrl}" alt="Musa's Photo ${index + 1}" class="profile-pic pic${index + 1}">`;
+                        }
+                    });
+                }
+            });
 
             if (photosHTML) {
                 photoContainer.innerHTML = photosHTML;
@@ -135,4 +140,4 @@ document.addEventListener("DOMContentLoaded", () => {
     loadReels();
     loadProfilePhotos(); // Naya function call
 });
-                
+        
