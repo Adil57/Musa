@@ -15,11 +15,7 @@ section { padding: 100px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
 section:last-of-type, #hero { border-bottom: none; }
 
 /* Typography & Animation Optimization */
-h2, p, .project-item, .skill-list span, .tool-list span, footer {
-    /* Yeh line browser ko animation ke liye ready rakhti hai */
-    will-change: transform, opacity;
-}
-
+h2, #about p, .project-item, .skill-list span, .tool-list span, footer { will-change: transform, opacity; }
 h1 { font-size: clamp(2.8rem, 8vw, 5rem); font-weight: 900; color: #ffffff; line-height: 1; margin: 0; }
 h2 { font-size: 2.5rem; font-weight: 500; margin-bottom: 40px; color: #ffffff; text-align: center; }
 p { font-size: 1.125rem; line-height: 1.6; max-width: 800px; color: #c0c0c0; }
@@ -29,7 +25,7 @@ a { color: #9f86ff; text-decoration: none; font-weight: 500; }
 #hero { padding: 80px 0; text-align: center; }
 .main-title { font-size: clamp(4rem, 12vw, 8rem); line-height: 1; margin: 0; overflow: hidden; }
 .subtitle { font-size: clamp(1.2rem, 3vw, 1.8rem); font-weight: 400; color: #c0c0c0; letter-spacing: 1px; text-transform: uppercase; margin-top: 10px; overflow: hidden; }
-.title-wrapper { will-change: transform; /* Hero title animation ke liye */ }
+.title-wrapper { will-change: transform; }
 
 /* "My Work" Section Styling */
 #my-work { padding-top: 20px; width: 100vw; position: relative; left: 50%; transform: translateX(-50%); }
@@ -52,8 +48,45 @@ a { color: #9f86ff; text-decoration: none; font-weight: 500; }
 .reels-swiper .swiper-button-prev { left: 10px; }
 .reels-swiper .swiper-button-next { right: 10px; }
 
+/* --- NEW: About Me Section Styling --- */
+.about-container {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+.about-photo {
+    flex-shrink: 0;
+}
+.about-photo img {
+    width: 250px;
+    height: 250px;
+    border-radius: 50%; /* Gol photo */
+    object-fit: cover;
+    border: 5px solid #333;
+}
+.about-text p {
+    text-align: left;
+    margin-bottom: 20px;
+}
+.about-text p:last-child {
+    margin-bottom: 0;
+}
+/* Mobile view ke liye */
+@media (max-width: 768px) {
+    .about-container {
+        flex-direction: column; /* Photo upar, text neeche */
+        text-align: center;
+    }
+    .about-text p {
+        text-align: center;
+    }
+}
+
+
 /* Other Sections */
-#about { text-align: center; }
+#projects { text-align: center; }
 .project-list { display: flex; flex-direction: column; gap: 20px; text-align: center; }
 .project-item { font-size: 1.5rem; color: #f0f0f0; transition: transform 0.3s ease, color 0.3s ease; }
 .project-item:hover { transform: translateX(10px); color: #9f86ff; }
@@ -66,3 +99,4 @@ footer { text-align: center; padding: 80px 20px; }
 .contact-button:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(159, 134, 255, 0.6); }
 .email-button { background-color: #4b4b4b; color: #ffffff; }
 .email-button:hover { background-color: #606060; }
+    
