@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- Function to load Hero Slider Images with Debugger ---
     async function loadSliderImages() {
         const swiperWrapper = document.querySelector('.hero-swiper .swiper-wrapper');
+        // Let's try both 'SliderImage' and 'sliderImage' one last time. We start with capital 'S'.
         const url = `https://cdn.contentful.com/spaces/${SPACE_ID}/environments/master/entries?access_token=${ACCESS_TOKEN}&content_type=SliderImage&include=1`;
         try {
             const response = await fetch(url); 
@@ -67,37 +68,40 @@ document.addEventListener("DOMContentLoaded", () => {
     function initializeReelsSwiper() {
         reelsSwiper = new Swiper('.reels-swiper', {
             effect: 'slide', slidesPerView: 'auto', spaceBetween: 30, centeredSlides: true, 
-            loop: document.querySelectorAll('.reels-swiper .swiper-slide').length > 2, // Loop only if more than 2 slides
+            loop: document.querySelectorAll('.reels-swiper .swiper-slide').length > 2,
             navigation: { nextEl: '.reels-swiper .swiper-button-next', prevEl: '.reels-swiper .swiper-button-prev' }
         });
 
-        // --- LAG FIX LOGIC ---
-        // Function to play video in active slide and pause others
-        const manageVideoPlayback = () => {
-            document.querySelectorAll('.reels-swiper video').forEach(vid => {
-                vid.muted = true;
-                vid.pause();
-            });
-            const activeSlide = document.querySelector('.reels-swiper .swiper-slide-active');
-            if (activeSlide) {
-                const activeVideo = activeSlide.querySelector('video');
-                if(activeVideo) {
-                    activeVideo.play();
+        // --- REELS PLAYBACK FIX ---
+        const manageVideoPlayback = (swiperInstance) => {
+            swiperInstance.slides.forEach((slide, index) => {
+                const video = slide.querySelector('video');
+                if (video) {
+                    if (index === swiperInstance.realIndex) {
+                        video.play();
+                    } else {
+                        video.pause();
+                    }
                 }
-            }
+            });
         };
 
-        // Call it on initialization and on slide change
-        manageVideoPlayback();
-        reelsSwiper.on('slideChange', manageVideoPlayback);
+        // Initial play
+        setTimeout(() => manageVideoPlayback(reelsSwiper), 500);
+        // Play on slide change
+        reelsSwiper.on('slideChange', () => manageVideoPlayback(reelsSwiper));
 
         // Hover to unmute logic
         const reelCards = document.querySelectorAll('.reels-swiper .swiper-slide');
-        reelCards.forEach(card => {
+        reelCards.forEach((card, index) => {
             const video = card.querySelector('video');
             if(video) {
-                card.addEventListener('mouseenter', () => { if(reelsSwiper.slides[reelsSwiper.activeIndex] === card) { video.muted = false; } });
-                card.addEventListener('mouseleave', () => { video.muted = true; });
+                card.addEventListener('mouseenter', () => {
+                    if (index === reelsSwiper.realIndex) video.muted = false;
+                });
+                card.addEventListener('mouseleave', () => {
+                    video.muted = true;
+                });
             }
         });
     }
@@ -118,4 +122,4 @@ document.addEventListener("DOMContentLoaded", () => {
     loadSliderImages();
     loadReels();
 });
-                                                                                                                                       
+            
