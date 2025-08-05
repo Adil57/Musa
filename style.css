@@ -15,11 +15,38 @@ body {
 }
 
 /* --- Slider Container Styling --- */
-.slider-container { height: 45vh; width: 100%; }
-.swiper { width: 100%; height: 100%; }
-.swiper-slide { text-align: center; font-size: 18px; background: #000; display: flex; justify-content: center; align-items: center; }
-.swiper-slide img { display: block; width: 100%; height: 100%; object-fit: cover; }
-:root { --swiper-theme-color: #9f86ff; }
+.slider-container {
+    height: 45vh;
+    width: 100%;
+    background-color: #000; /* Added black background for letterboxing */
+}
+
+.swiper {
+    width: 100%;
+    height: 100%;
+}
+
+.swiper-slide {
+    text-align: center;
+    font-size: 18px;
+    background: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.swiper-slide img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    /* --- THE ONLY CHANGE IS HERE --- */
+    object-fit: contain; /* 'cover' se 'contain' kar diya hai */
+}
+
+/* Swiper buttons aur dots ka color theme ke hisaab se set karna */
+:root {
+    --swiper-theme-color: #9f86ff;
+}
 
 /* --- Main Content Layout --- */
 main { max-width: 1000px; margin: 0 auto; padding: 0 40px; }
@@ -27,41 +54,37 @@ section { padding: 100px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
 section:last-of-type, #hero { border-bottom: none; }
 
 /* --- Typography (Text Styling) --- */
+h1 { font-size: clamp(2.8rem, 8vw, 5rem); font-weight: 900; color: #ffffff; line-height: 1; margin: 0; }
 h2 { font-size: 2.5rem; font-weight: 500; margin-bottom: 40px; color: #ffffff; }
 p { font-size: 1.125rem; line-height: 1.6; max-width: 800px; color: #c0c0c0; }
 a { color: #9f86ff; text-decoration: none; font-weight: 500; }
 
-/* --- UPDATED: New Hero Section & Title Styling --- */
+/* --- Hero Section Styling --- */
 #hero {
     padding: 80px 0;
     text-align: center;
 }
 
-/* Naye title "Musa" ke liye styling */
 .main-title {
-    font-size: clamp(4rem, 12vw, 8rem); /* Bada aur bold */
+    font-size: clamp(4rem, 12vw, 8rem);
     font-weight: 900;
     color: #ffffff;
     line-height: 1;
     margin: 0;
-    overflow: hidden; /* Animation ke liye zaroori */
+    overflow: hidden;
 }
 
-/* Naye subtitle ke liye styling */
 .subtitle {
-    font-size: clamp(1.2rem, 3vw, 1.8rem); /* Chhota aur halka */
+    font-size: clamp(1.2rem, 3vw, 1.8rem);
     font-weight: 400;
     color: #c0c0c0;
     letter-spacing: 1px;
     text-transform: uppercase;
     margin-top: 10px;
-    overflow: hidden; /* Animation ke liye zaroori */
+    overflow: hidden;
 }
 
-/* Yeh wrapper animation mein text ko slide up karne mein help karega */
-.title-wrapper {
-    /* Iski styling JS se aayegi (animation) */
-}
+.title-wrapper { /* For animation */ }
 
 
 /* -- Baaki ka CSS waise hi rahega -- */
