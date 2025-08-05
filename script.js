@@ -5,12 +5,21 @@ document.addEventListener("DOMContentLoaded", () => {
     const ACCESS_TOKEN = 'ANeTj3WEegFMYrW8Rqj-VbSQe7vPncMdF1Ow1ZZruk0';
     let heroSwiper, reelsSwiper;
 
-    // --- Function to load Hero Slider Images ---
+    // --- Function to load Hero Slider Images with Debugger ---
     async function loadSliderImages() {
         const swiperWrapper = document.querySelector('.hero-swiper .swiper-wrapper');
         const url = `https://cdn.contentful.com/spaces/${SPACE_ID}/environments/master/entries?access_token=${ACCESS_TOKEN}&content_type=SliderImage&include=1`;
         try {
-            const response = await fetch(url); const data = await response.json();
+            const response = await fetch(url); 
+            const data = await response.json();
+
+            // --- SLIDERIMAGE DEBUGGER ---
+            console.log("--- SLIDERIMAGE DEBUGGER ---");
+            console.log("'SliderImage' content type ke liye API se yeh 'items' mile hain:");
+            console.log(data.items);
+            console.log("--------------------------");
+            // --- END DEBUGGER ---
+
             if (!data.items || !data.items.length || !data.includes || !data.includes.Asset) return;
             const assets = data.includes.Asset.reduce((acc, asset) => { acc[asset.sys.id] = asset.fields.file.url; return acc; }, {});
             let slidesHTML = '';
@@ -33,10 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const url = `https://cdn.contentful.com/spaces/${SPACE_ID}/environments/master/entries?access_token=${ACCESS_TOKEN}&content_type=reel&include=1`;
         try {
             const response = await fetch(url); const data = await response.json();
-            if (!data.items || !data.items.length || !data.includes || !data.includes.Asset) {
-                console.log("No published reels found from Contentful API.");
-                return;
-            }
+            if (!data.items || !data.items.length || !data.includes || !data.includes.Asset) { return; }
             const assets = data.includes.Asset.reduce((acc, asset) => { acc[asset.sys.id] = asset.fields.file.url; return acc; }, {});
             let slidesHTML = '';
             data.items.forEach(item => {
@@ -44,15 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     item.fields.videoFile.forEach(videoLink => {
                         if (videoLink && videoLink.sys && assets[videoLink.sys.id]) {
                             const videoUrl = 'https:' + assets[videoLink.sys.id];
-                            slidesHTML += `
-                                <div class="swiper-slide">
-                                    <div class="reel-card">
-                                        <video src="${videoUrl}" autoplay loop muted playsinline></video>
-                                        <div class="sound-icon">
-                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 4L8 8H4V16H8L12 20V4ZM14 8.5V15.5C15.86 15.17 17.17 13.56 17.17 11.75C17.17 9.94 15.86 8.33 14 8.5Z" fill="white"/></svg>
-                                        </div>
-                                    </div>
-                                </div>`;
+                            slidesHTML += `<div class="swiper-slide"><div class="reel-card"><video src="${videoUrl}" loop muted playsinline></video><div class="sound-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 4L8 8H4V16H8L12 20V4ZM14 8.5V15.5C15.86 15.17 17.17 13.56 17.17 11.75C17.17 9.94 15.86 8.33 14 8.5Z" fill="white"/></svg></div></div></div>`;
                         }
                     });
                 }
@@ -69,14 +67,36 @@ document.addEventListener("DOMContentLoaded", () => {
     function initializeReelsSwiper() {
         reelsSwiper = new Swiper('.reels-swiper', {
             effect: 'slide', slidesPerView: 'auto', spaceBetween: 30, centeredSlides: true, 
-            loop: document.querySelectorAll('.reels-swiper .swiper-slide').length > 1,
+            loop: document.querySelectorAll('.reels-swiper .swiper-slide').length > 2, // Loop only if more than 2 slides
             navigation: { nextEl: '.reels-swiper .swiper-button-next', prevEl: '.reels-swiper .swiper-button-prev' }
         });
+
+        // --- LAG FIX LOGIC ---
+        // Function to play video in active slide and pause others
+        const manageVideoPlayback = () => {
+            document.querySelectorAll('.reels-swiper video').forEach(vid => {
+                vid.muted = true;
+                vid.pause();
+            });
+            const activeSlide = document.querySelector('.reels-swiper .swiper-slide-active');
+            if (activeSlide) {
+                const activeVideo = activeSlide.querySelector('video');
+                if(activeVideo) {
+                    activeVideo.play();
+                }
+            }
+        };
+
+        // Call it on initialization and on slide change
+        manageVideoPlayback();
+        reelsSwiper.on('slideChange', manageVideoPlayback);
+
+        // Hover to unmute logic
         const reelCards = document.querySelectorAll('.reels-swiper .swiper-slide');
         reelCards.forEach(card => {
             const video = card.querySelector('video');
             if(video) {
-                card.addEventListener('mouseenter', () => { video.muted = false; });
+                card.addEventListener('mouseenter', () => { if(reelsSwiper.slides[reelsSwiper.activeIndex] === card) { video.muted = false; } });
                 card.addEventListener('mouseleave', () => { video.muted = true; });
             }
         });
@@ -95,8 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
     gsap.from("footer", { opacity: 0, y: 50, scrollTrigger: { trigger: "footer", start: "top 95%", toggleActions: "play none none reset" } });
 
     // --- Start everything ---
-    // THE FIX IS HERE
     loadSliderImages();
     loadReels();
 });
-                                                                       
+                                                                                                                                       
