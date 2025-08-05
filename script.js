@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const url = `https://cdn.contentful.com/spaces/${SPACE_ID}/environments/master/entries?access_token=${ACCESS_TOKEN}&content_type=sliderImage&include=1`;
         try {
             const response = await fetch(url); const data = await response.json();
-            if (!data.items || !data.items.length) return;
+            if (!data.items || !data.items.length || !data.includes || !data.includes.Asset) return;
             const assets = data.includes.Asset.reduce((acc, asset) => { acc[asset.sys.id] = asset.fields.file.url; return acc; }, {});
             let slidesHTML = '';
             data.items.forEach(item => {
@@ -25,24 +25,23 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (error) { console.error("Error loading hero images:", error); }
     }
 
-    // --- NEW: Function to load Reels ---
+    // --- Function to load Reels ---
     async function loadReels() {
         const swiperWrapper = document.querySelector('.reels-swiper .swiper-wrapper');
         const url = `https://cdn.contentful.com/spaces/${SPACE_ID}/environments/master/entries?access_token=${ACCESS_TOKEN}&content_type=reel&include=1`;
         try {
             const response = await fetch(url); const data = await response.json();
-            if (!data.items || !data.items.length) return;
+            if (!data.items || !data.items.length || !data.includes || !data.includes.Asset) return;
             const assets = data.includes.Asset.reduce((acc, asset) => { acc[asset.sys.id] = asset.fields.file.url; return acc; }, {});
             let slidesHTML = '';
             data.items.forEach(item => {
+                // THE FIX IS HERE: We only look for 'videoFile' now
                 if (item.fields.videoFile && item.fields.videoFile.sys && assets[item.fields.videoFile.sys.id]) {
                     const videoUrl = 'https:' + assets[item.fields.videoFile.sys.id];
-                    const title = item.fields.title || '';
                     slidesHTML += `
                         <div class="swiper-slide">
                             <div class="reel-card">
                                 <video src="${videoUrl}" autoplay loop muted playsinline></video>
-                                <div class="reel-title">${title}</div>
                                 <div class="sound-icon">
                                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 4L8 8H4V16H8L12 20V4ZM14 8.5V15.5C15.86 15.17 17.17 13.56 17.17 11.75C17.17 9.94 15.86 8.33 14 8.5Z" fill="white"/></svg>
                                 </div>
@@ -57,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- Swiper Initializers ---
     function initializeHeroSwiper() {
         const slideCount = document.querySelectorAll('.hero-swiper .swiper-slide').length;
-        new Swiper('.hero-swiper', { loop: slideCount > 1, autoplay: { delay: 3000, disableOnInteraction: false }, speed: 600, pagination: { el: '.swiper-pagination', clickable: true }, navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' } });
+        new Swiper('.hero-swiper', { loop: slideCount > 1, autoplay: { delay: 3000, disableOnInteraction: false }, speed: 600, pagination: { el: '.swiper-pagination', clickable: true }, navigation: { nextEl: '.hero-swiper .swiper-button-next', prevEl: '.hero-swiper .swiper-button-prev' } });
     }
     
     function initializeReelsSwiper() {
@@ -70,7 +69,6 @@ document.addEventListener("DOMContentLoaded", () => {
             navigation: { nextEl: '.reels-swiper .swiper-button-next', prevEl: '.reels-swiper .swiper-button-prev' }
         });
 
-        // Hover to unmute logic
         const reelCards = document.querySelectorAll('.reels-swiper .swiper-slide');
         reelCards.forEach(card => {
             const video = card.querySelector('video');
@@ -97,4 +95,4 @@ document.addEventListener("DOMContentLoaded", () => {
     loadSliderImages();
     loadReels();
 });
-        
+                              
