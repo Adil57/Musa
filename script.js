@@ -3,10 +3,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const ACCESS_TOKEN = 'ANeTj3WEegFMYrW8Rqj-VbSQe7vPncMdF1Ow1ZZruk0';
     let heroSwiper, reelsSwiper;
 
+    // --- Contentful Functions (No Change) ---
     async function loadSliderImages() {
         const swiperWrapper = document.querySelector('.hero-swiper .swiper-wrapper');
-        // --- THE FINAL FIX FOR IMAGES IS HERE ---
-        // ID ko 'sliderImage' (chota 's') kar diya hai
         const url = `https://cdn.contentful.com/spaces/${SPACE_ID}/environments/master/entries?access_token=${ACCESS_TOKEN}&content_type=sliderImage&include=1`;
         try {
             const response = await fetch(url); const data = await response.json();
@@ -48,33 +47,26 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (error) { console.error("Error loading reels:", error); }
     }
 
+    // --- Swiper Initializers (No Change) ---
     function initializeHeroSwiper() {
         heroSwiper = new Swiper('.hero-swiper', { loop: document.querySelectorAll('.hero-swiper .swiper-slide').length > 1, autoplay: { delay: 3000, disableOnInteraction: false }, speed: 600, pagination: { el: '.swiper-pagination', clickable: true }, navigation: { nextEl: '.hero-swiper .swiper-button-next', prevEl: '.hero-swiper .swiper-button-prev' } });
     }
-    
     function initializeReelsSwiper() {
         reelsSwiper = new Swiper('.reels-swiper', {
             effect: 'slide', slidesPerView: 'auto', spaceBetween: 30, centeredSlides: true, 
             loop: document.querySelectorAll('.reels-swiper .swiper-slide').length > 2,
             navigation: { nextEl: '.reels-swiper .swiper-button-next', prevEl: '.reels-swiper .swiper-button-prev' }
         });
-        
         const reelSlides = document.querySelectorAll('.reels-swiper .swiper-slide');
         reelSlides.forEach(slide => {
             const video = slide.querySelector('video');
             const playPauseBtn = slide.querySelector('.play-pause-btn');
             const soundIcon = slide.querySelector('.sound-icon');
-
             if (video && playPauseBtn) {
                 playPauseBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
                     if (video.paused) {
-                        reelSlides.forEach(s => {
-                            if (s !== slide) {
-                                s.querySelector('video')?.pause();
-                                s.classList.remove('is-playing');
-                            }
-                        });
+                        reelSlides.forEach(s => { if (s !== slide) { s.querySelector('video')?.pause(); s.classList.remove('is-playing'); } });
                         video.play();
                         slide.classList.add('is-playing');
                     } else {
@@ -84,28 +76,36 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
             }
             if(video && soundIcon) {
-                soundIcon.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    video.muted = !video.muted;
-                    // Optional: Add visual feedback for sound icon
-                    soundIcon.style.opacity = video.muted ? 0.6 : 1;
-                });
+                soundIcon.addEventListener('click', (e) => { e.stopPropagation(); video.muted = !video.muted; soundIcon.style.opacity = video.muted ? 0.6 : 1; });
             }
         });
     }
 
+    // --- GSAP Animations ---
     gsap.registerPlugin(ScrollTrigger);
+    
+    // Title animation
     gsap.from(".main-title .title-wrapper", { yPercent: 105, duration: 0.8, ease: "power3.out", delay: 0.5 });
     gsap.from(".subtitle .title-wrapper", { yPercent: 105, duration: 0.8, ease: "power3.out", delay: 0.7 });
-    const sectionsToAnimate = gsap.utils.toArray(['#about', '#projects', '#skills', '#tools']);
-    sectionsToAnimate.forEach(section => {
-        gsap.from(section.querySelector('h2'), { opacity: 0, y: 50, scrollTrigger: { trigger: section, start: "top 85%", toggleActions: "play none none reset" } });
-        gsap.from(section.querySelectorAll('p, .project-item'), { opacity: 0, y: 30, stagger: 0.15, scrollTrigger: { trigger: section, start: "top 80%", toggleActions: "play none none reset" } });
-    });
-    gsap.from(".skill-list span, .tool-list span", { opacity: 0, y: 30, scale: 0.9, stagger: 0.08, scrollTrigger: { trigger: "#skills", start: "top 75%", toggleActions: "play none none reset" } });
-    gsap.from("footer", { opacity: 0, y: 50, scrollTrigger: { trigger: "footer", start: "top 95%", toggleActions: "play none none reset" } });
+    
+    // --- THE PERFORMANCE FIX IS HERE ---
+    // Saare scroll animations ko ek saath 'batch' kar diya hai
+    const animatedElements = gsap.utils.toArray('h2, #about p, .project-item, .skill-list span, .tool-list span, footer');
 
+    ScrollTrigger.batch(animatedElements, {
+        interval: 0.1, // thoda sa gap har animation ke beech
+        batchMax: 4,   // ek baar mein max 4 elements animate honge
+        once: true,    // animation sirf ek baar chalega
+        onEnter: batch => gsap.from(batch, {
+            opacity: 0,
+            y: 50,
+            stagger: 0.15,
+            ease: "power2.out",
+        }),
+    });
+
+    // --- Start everything ---
     loadSliderImages();
     loadReels();
 });
-                
+                          
