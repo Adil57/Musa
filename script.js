@@ -39,9 +39,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             const assets = data.includes.Asset.reduce((acc, asset) => { acc[asset.sys.id] = asset.fields.file.url; return acc; }, {});
             let slidesHTML = '';
-
-            // --- THE FINAL FIX IS HERE ---
-            // Ab yeh code har entry ke andar multiple videos ko bhi handle karega
             data.items.forEach(item => {
                 if (item.fields.videoFile && Array.isArray(item.fields.videoFile)) {
                     item.fields.videoFile.forEach(videoLink => {
@@ -60,7 +57,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     });
                 }
             });
-
             if (slidesHTML) { swiperWrapper.innerHTML = slidesHTML; initializeReelsSwiper(); }
         } catch (error) { console.error("Error loading reels:", error); }
     }
@@ -99,7 +95,8 @@ document.addEventListener("DOMContentLoaded", () => {
     gsap.from("footer", { opacity: 0, y: 50, scrollTrigger: { trigger: "footer", start: "top 95%", toggleActions: "play none none reset" } });
 
     // --- Start everything ---
+    // THE FIX IS HERE
     loadSliderImages();
     loadReels();
 });
-                             
+                                                                       
