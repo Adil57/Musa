@@ -2,14 +2,22 @@
 body { background: linear-gradient(125deg, #1a0238, #0b1a3b, #2c0b31, #02252e); background-size: 400% 400%; animation: gradientFlow 15s ease infinite; color: #e0e0e0; font-family: 'Inter', sans-serif; margin: 0; padding: 0; box-sizing: border-box; overflow-x: hidden; }
 @keyframes gradientFlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-/* --- HERO SLIDER FIX --- */
+/* --- HERO SLIDER --- */
+/* Default style for mobile */
 .slider-container {
     height: 45vh;
-    width: 100vw; /* Yeh screen ki poori width lega */
-    position: relative;
-    left: 50%;
-    transform: translateX(-50%);
+    width: 100%;
     background-color: transparent;
+}
+
+/* Styles for desktop (screens wider than 768px) */
+@media (min-width: 769px) {
+    .slider-container {
+        width: 100vw;
+        position: relative;
+        left: 50%;
+        transform: translateX(-50%);
+    }
 }
 
 .swiper { width: 100%; height: 100%; }
@@ -85,4 +93,4 @@ footer { text-align: center; padding: 80px 20px; }
 .contact-button:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(159, 134, 255, 0.6); }
 .email-button { background-color: #4b4b4b; color: #ffffff; }
 .email-button:hover { background-color: #606060; }
-    
+   
