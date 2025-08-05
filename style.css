@@ -1,0 +1,127 @@
+/* --- Basic Setup & Dark Theme --- */
+body {
+    background-color: #121212; /* Ek premium dark grey, pure black nahi */
+    color: #e0e0e0; /* Thoda soft white text */
+    font-family: 'Inter', sans-serif; /* Modern font jo humne import kiya tha */
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow-x: hidden; /* Horizontal scrollbar ko rokne ke liye */
+}
+
+/* --- Main Content Layout --- */
+main {
+    max-width: 1000px;
+    margin: 0 auto; /* Content ko center mein laane ke liye */
+    padding: 0 40px; /* Side se thoda space */
+}
+
+section {
+    padding: 120px 0; /* Har section ke upar-neeche space */
+    border-bottom: 1px solid #222; /* Sections ke beech halki si line */
+}
+
+section:last-of-type {
+    border-bottom: none;
+}
+
+/* --- Typography (Text Styling) --- */
+h1 {
+    font-size: 5rem; /* 80px - Badi headline */
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.1;
+}
+
+h2 {
+    font-size: 2.5rem; /* 40px - Section headings */
+    font-weight: 500;
+    margin-bottom: 40px;
+    color: #ffffff;
+}
+
+p {
+    font-size: 1.125rem; /* 18px */
+    line-height: 1.6;
+    max-width: 800px; /* Paragraph zyada faile nahi */
+}
+
+a {
+    color: #00aaff; /* Ek vibrant blue link color */
+    text-decoration: none;
+    font-weight: 500;
+}
+
+/* --- Hero Section Specific Styling --- */
+#hero {
+    min-height: 100vh; /* Pehla section poori screen lega */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-bottom: none; /* Hero ke neeche line nahi chahiye */
+}
+
+/* Yeh class text animation ke liye hai */
+.line {
+    overflow: hidden; /* Zaroori hai text reveal animation ke liye */
+}
+
+
+/* --- Projects List Styling --- */
+.project-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.project-item {
+    font-size: 1.5rem;
+    transition: transform 0.3s ease;
+}
+
+.project-item:hover {
+    transform: translateX(10px); /* Hover par thoda sa right move hoga */
+}
+
+
+/* --- Skills & Tools List Styling (Tag/Badge style) --- */
+.skill-list, .tool-list {
+    display: flex;
+    flex-wrap: wrap; /* Agar items zyada ho toh agli line mein aa jayenge */
+    gap: 15px;
+}
+
+.skill-list span, .tool-list span {
+    background-color: #222;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.skill-list span:hover, .tool-list span:hover {
+    background-color: #00aaff;
+    color: #121212;
+}
+
+/* --- Footer & Contact Button --- */
+footer {
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.contact-button {
+    background-color: #00aaff;
+    color: #121212;
+    padding: 15px 30px;
+    border-radius: 50px;
+    font-size: 1.25rem;
+    font-weight: 700;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.contact-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(0, 170, 255, 0.5);
+  }
+  
