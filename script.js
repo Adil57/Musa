@@ -15,24 +15,15 @@ document.addEventListener("DOMContentLoaded", () => {
             const response = await fetch(url);
             const data = await response.json();
 
-            // --- DEEPEST DEBUGGER ---
-            console.log("--- FINAL DEBUGGER LOG ---");
-            console.log("1. Contentful se aaya poora data:", data);
-
             if (!data.items || data.items.length === 0) {
-                console.error("2. ERROR: Contentful se koi entry (item) nahi mili.");
-                swiperWrapper.innerHTML = `<div class="swiper-slide"><p>No entries found in Contentful.</p></div>`;
-                return;
+                 swiperWrapper.innerHTML = `<div class="swiper-slide"><p>No published images found.</p></div>`;
+                 return;
             }
-            console.log("2. Entries mili hain:", data.items);
 
             if (!data.includes || !data.includes.Asset) {
-                console.error("3. ERROR: Entries toh hain, par unke saath photos (Assets) nahi aaye.");
-                swiperWrapper.innerHTML = `<div class="swiper-slide"><p>Entries found, but no linked assets.</p></div>`;
+                swiperWrapper.innerHTML = `<div class="swiper-slide"><p>Entries found, but linked photos are missing or not published.</p></div>`;
                 return;
             }
-            console.log("3. Photos (Assets) bhi mili hain:", data.includes.Asset);
-            // --- END DEBUGGER ---
 
             const assets = data.includes.Asset.reduce((acc, asset) => { acc[asset.sys.id] = asset.fields; return acc; }, {});
             let slidesHTML = '';
@@ -44,8 +35,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     if (imageFile) {
                         const imageUrl = 'https:' + imageFile.url;
                         slidesHTML += `<div class="swiper-slide"><img src="${imageUrl}" alt="Slider Image"></div>`;
-                    } else {
-                        console.error(`4. ERROR: Entry mein photo link hai (ID: ${assetId}), par woh photo published assets ki list mein nahi mili!`);
                     }
                 }
             });
@@ -54,19 +43,26 @@ document.addEventListener("DOMContentLoaded", () => {
                 swiperWrapper.innerHTML = slidesHTML;
                 initializeSwiper();
             } else {
-                swiperWrapper.innerHTML = `<div class="swiper-slide"><p>Could not build slides. Check console logs.</p></div>`;
+                swiperWrapper.innerHTML = `<div class="swiper-slide"><p>Could not build slides from the data.</p></div>`;
             }
 
         } catch (error) {
-            console.error("Main Error:", error);
-            swiperWrapper.innerHTML = `<div class="swiper-slide"><p>A critical error occurred.</p></div>`;
+            console.error("Error during Contentful fetch:", error);
+            swiperWrapper.innerHTML = `<div class="swiper-slide"><p>Error loading images.</p></div>`;
         }
     }
 
     // --- Swiper and GSAP Animations ---
     function initializeSwiper() {
+        const slideCount = document.querySelectorAll('.swiper-slide').length;
         swiper = new Swiper('.swiper', {
-            loop: true, autoplay: { delay: 3000, disableOnInteraction: false }, speed: 600,
+            // BEST FIX: Loop tabhi chalega jab 1 se zyada slide ho
+            loop: slideCount > 1,
+            autoplay: {
+                delay: 3000,
+                disableOnInteraction: false,
+            },
+            speed: 600,
             pagination: { el: '.swiper-pagination', clickable: true },
             navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
         });
@@ -87,6 +83,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- Start everything ---
     loadSliderImages();
 
-    console.log("Musa's Portfolio ULTIMATE DEBUGGER loaded!");
+    console.log("Musa's Portfolio Final Version Loaded!");
 });
-                         
+            
