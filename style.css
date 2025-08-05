@@ -5,12 +5,19 @@ body { background: linear-gradient(125deg, #1a0238, #0b1a3b, #2c0b31, #02252e); 
 /* Hero Image Slider */
 .slider-container { height: 45vh; width: 100%; background-color: transparent; }
 .swiper { width: 100%; height: 100%; }
-.hero-swiper .swiper-slide { text-align: center; background: #000; display: flex; justify-content: center; align-items: center; }
+.hero-swiper .swiper-slide {
+    text-align: center;
+    /* THE FIX IS HERE */
+    background: transparent; /* Black background hata diya */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 .hero-swiper .swiper-slide img { display: block; width: 100%; height: 100%; object-fit: contain; }
-:root { --swiper-theme-color: #9f86ff; /* Applies to both sliders */ }
+:root { --swiper-theme-color: #9f86ff; }
 
 /* Main Content Layout */
-main { max-width: 1200px; /* Increased width for card slider */ margin: 0 auto; padding: 0 20px; }
+main { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
 section { padding: 100px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
 section:last-of-type, #hero { border-bottom: none; }
 
@@ -26,9 +33,9 @@ a { color: #9f86ff; text-decoration: none; font-weight: 500; }
 .subtitle { font-size: clamp(1.2rem, 3vw, 1.8rem); font-weight: 400; color: #c0c0c0; letter-spacing: 1px; text-transform: uppercase; margin-top: 10px; overflow: hidden; }
 .title-wrapper { /* For animation */ }
 
-/* --- NEW: "My Work" Section Styling --- */
+/* "My Work" Section Styling */
 #my-work {
-    /* To make slider overflow visible on sides */
+    padding-top: 20px;
     width: 100vw;
     position: relative;
     left: 50%;
@@ -37,11 +44,11 @@ a { color: #9f86ff; text-decoration: none; font-weight: 500; }
 .reels-swiper {
     width: 100%;
     padding: 20px 0;
-    overflow: visible; /* To show cards peeking from sides */
+    overflow: visible; 
 }
 .reels-swiper .swiper-slide {
-    width: 300px; /* Width of each card */
-    height: 530px; /* Height of each card (approx 9:16 ratio) */
+    width: 300px; 
+    height: 530px; 
     border-radius: 16px;
     overflow: hidden;
     position: relative;
@@ -56,19 +63,6 @@ a { color: #9f86ff; text-decoration: none; font-weight: 500; }
     width: 100%;
     height: 100%;
     object-fit: cover;
-}
-.reels-swiper .reel-title {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    padding: 20px 15px;
-    font-size: 1rem;
-    font-weight: 500;
-    color: #fff;
-    text-align: left;
-    background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
-    z-index: 2;
 }
 .reels-swiper .sound-icon {
     position: absolute;
@@ -100,4 +94,4 @@ a { color: #9f86ff; text-decoration: none; font-weight: 500; }
 footer { text-align: center; padding: 80px 20px; }
 .contact-button { background-color: #9f86ff; color: #121212; padding: 15px 30px; border-radius: 50px; font-size: 1.25rem; font-weight: 700; transition: transform 0.3s ease, box-shadow 0.3s ease; }
 .contact-button:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(159, 134, 255, 0.6); }
-         
+    
