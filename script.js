@@ -1,32 +1,6 @@
 gsap.registerPlugin(ScrollTrigger);
 
-// --- BACKGROUND CIRCLE ANIMATION ---
-// Yeh animation hamesha chalta rahega
-gsap.to(".circle1", {
-    duration: 15,
-    x: "random(-100, 100)",
-    y: "random(-100, 100)",
-    repeat: -1,
-    yoyo: true,
-    ease: "sine.inOut"
-});
-gsap.to(".circle2", {
-    duration: 20,
-    x: "random(-150, 150)",
-    y: "random(-150, 150)",
-    repeat: -1,
-    yoyo: true,
-    ease: "sine.inOut"
-});
-gsap.to(".circle3", {
-    duration: 18,
-    x: "random(-120, 120)",
-    y: "random(-120, 120)",
-    repeat: -1,
-    yoyo: true,
-    ease: "sine.inOut"
-});
-
+// Background animation ka JS code hata diya gaya hai, ab woh CSS se handle ho raha hai.
 
 // --- HERO SECTION TEXT REVEAL ANIMATION ---
 gsap.from("#hero .line", {
@@ -50,7 +24,8 @@ sectionsToAnimate.forEach(section => {
         scrollTrigger: {
             trigger: section,
             start: "top 85%",
-            toggleActions: "play none none none" // Yeh ensure karega ki animation scroll par aane pe play ho
+            // UPDATED: Animation har baar chalane ke liye
+            toggleActions: "play none none reset" 
         }
     });
 
@@ -64,7 +39,8 @@ sectionsToAnimate.forEach(section => {
         scrollTrigger: {
             trigger: section,
             start: "top 80%",
-            toggleActions: "play none none none"
+            // UPDATED: Animation har baar chalane ke liye
+            toggleActions: "play none none reset"
         }
     });
 });
@@ -80,7 +56,8 @@ gsap.from(".skill-list span, .tool-list span", {
     scrollTrigger: {
         trigger: "#skills",
         start: "top 75%",
-        toggleActions: "play none none none"
+        // UPDATED: Animation har baar chalane ke liye
+        toggleActions: "play none none reset"
     }
 });
 
@@ -93,9 +70,10 @@ gsap.from("footer", {
     scrollTrigger: {
         trigger: "footer",
         start: "top 95%",
-        toggleActions: "play none none none"
+        // UPDATED: Animation har baar chalane ke liye
+        toggleActions: "play none none reset"
     }
 });
 
-console.log("Musa's Portfolio animations V2 loaded!");
-        
+console.log("Musa's Portfolio animations V3 (Final) loaded!");
+              
