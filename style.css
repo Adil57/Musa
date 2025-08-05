@@ -1,71 +1,101 @@
 /* --- Basic Setup & Dark Theme --- */
 body {
-    background-color: #121212; /* Ek premium dark grey, pure black nahi */
-    color: #e0e0e0; /* Thoda soft white text */
-    font-family: 'Inter', sans-serif; /* Modern font jo humne import kiya tha */
+    background-color: #121212;
+    color: #e0e0e0;
+    font-family: 'Inter', sans-serif;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    overflow-x: hidden; /* Horizontal scrollbar ko rokne ke liye */
+    overflow-x: hidden;
 }
+
+/* --- BACKGROUND BLUR CIRCLES --- */
+.bg-blur-circle {
+    position: fixed;
+    z-index: -1; /* Content ke peeche rahenge */
+    border-radius: 50%;
+    filter: blur(150px); /* Blur effect */
+    opacity: 0.15;
+}
+.circle1 {
+    width: 400px;
+    height: 400px;
+    top: -100px;
+    left: -100px;
+    background-color: #00aaff; /* Blue color */
+}
+.circle2 {
+    width: 300px;
+    height: 300px;
+    bottom: -50px;
+    right: -50px;
+    background-color: #ff00ff; /* Magenta color */
+}
+.circle3 {
+    width: 250px;
+    height: 250px;
+    top: 50%;
+    left: 40%;
+    background-color: #00ffaa; /* Green-ish color */
+}
+
 
 /* --- Main Content Layout --- */
 main {
     max-width: 1000px;
-    margin: 0 auto; /* Content ko center mein laane ke liye */
-    padding: 0 40px; /* Side se thoda space */
+    margin: 0 auto;
+    padding: 0 40px;
+    position: relative; /* Zaroori hai taki content circles ke upar rahe */
+    z-index: 1;
 }
 
 section {
-    padding: 120px 0; /* Har section ke upar-neeche space */
-    border-bottom: 1px solid #222; /* Sections ke beech halki si line */
+    padding: 120px 0;
+    border-bottom: 1px solid #222;
 }
-
-section:last-of-type {
+section:last-of-type, #hero {
     border-bottom: none;
 }
 
 /* --- Typography (Text Styling) --- */
 h1 {
-    font-size: 5rem; /* 80px - Badi headline */
+    /* RESPONSIVE FONT SIZE: Ab yeh screen size ke hisaab se adjust hoga */
+    font-size: clamp(2.8rem, 8vw, 5rem);
     font-weight: 700;
     margin: 0;
     line-height: 1.1;
 }
 
 h2 {
-    font-size: 2.5rem; /* 40px - Section headings */
+    font-size: 2.5rem;
     font-weight: 500;
     margin-bottom: 40px;
     color: #ffffff;
 }
 
 p {
-    font-size: 1.125rem; /* 18px */
+    font-size: 1.125rem;
     line-height: 1.6;
-    max-width: 800px; /* Paragraph zyada faile nahi */
+    max-width: 800px;
 }
 
 a {
-    color: #00aaff; /* Ek vibrant blue link color */
+    color: #00aaff;
     text-decoration: none;
     font-weight: 500;
 }
 
 /* --- Hero Section Specific Styling --- */
 #hero {
-    min-height: 100vh; /* Pehla section poori screen lega */
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    border-bottom: none; /* Hero ke neeche line nahi chahiye */
 }
 
-/* Yeh class text animation ke liye hai */
 .line {
-    overflow: hidden; /* Zaroori hai text reveal animation ke liye */
+    overflow: hidden;
 }
-
 
 /* --- Projects List Styling --- */
 .project-list {
@@ -73,24 +103,20 @@ a {
     flex-direction: column;
     gap: 20px;
 }
-
 .project-item {
     font-size: 1.5rem;
     transition: transform 0.3s ease;
 }
-
 .project-item:hover {
-    transform: translateX(10px); /* Hover par thoda sa right move hoga */
+    transform: translateX(10px);
 }
-
 
 /* --- Skills & Tools List Styling (Tag/Badge style) --- */
 .skill-list, .tool-list {
     display: flex;
-    flex-wrap: wrap; /* Agar items zyada ho toh agli line mein aa jayenge */
+    flex-wrap: wrap;
     gap: 15px;
 }
-
 .skill-list span, .tool-list span {
     background-color: #222;
     padding: 10px 20px;
@@ -98,7 +124,6 @@ a {
     font-size: 1rem;
     transition: background-color 0.3s ease;
 }
-
 .skill-list span:hover, .tool-list span:hover {
     background-color: #00aaff;
     color: #121212;
@@ -109,7 +134,6 @@ footer {
     text-align: center;
     padding: 80px 20px;
 }
-
 .contact-button {
     background-color: #00aaff;
     color: #121212;
@@ -119,9 +143,8 @@ footer {
     font-weight: 700;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-
 .contact-button:hover {
     transform: scale(1.05);
     box-shadow: 0 0 20px rgba(0, 170, 255, 0.5);
-  }
-  
+        }
+    
