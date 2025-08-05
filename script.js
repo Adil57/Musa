@@ -1,26 +1,17 @@
 document.addEventListener("DOMContentLoaded", () => {
-
-    // --- Contentful Setup ---
     const SPACE_ID = 'g9fqokvd9b7d';
     const ACCESS_TOKEN = 'ANeTj3WEegFMYrW8Rqj-VbSQe7vPncMdF1Ow1ZZruk0';
     let heroSwiper, reelsSwiper;
 
-    // --- Function to load Hero Slider Images with Debugger ---
     async function loadSliderImages() {
         const swiperWrapper = document.querySelector('.hero-swiper .swiper-wrapper');
-        // Let's try both 'SliderImage' and 'sliderImage' one last time. We start with capital 'S'.
         const url = `https://cdn.contentful.com/spaces/${SPACE_ID}/environments/master/entries?access_token=${ACCESS_TOKEN}&content_type=SliderImage&include=1`;
         try {
-            const response = await fetch(url); 
-            const data = await response.json();
-
+            const response = await fetch(url); const data = await response.json();
             // --- SLIDERIMAGE DEBUGGER ---
             console.log("--- SLIDERIMAGE DEBUGGER ---");
-            console.log("'SliderImage' content type ke liye API se yeh 'items' mile hain:");
-            console.log(data.items);
+            console.log("'SliderImage' content type ke liye API se yeh 'items' mile hain:", data.items);
             console.log("--------------------------");
-            // --- END DEBUGGER ---
-
             if (!data.items || !data.items.length || !data.includes || !data.includes.Asset) return;
             const assets = data.includes.Asset.reduce((acc, asset) => { acc[asset.sys.id] = asset.fields.file.url; return acc; }, {});
             let slidesHTML = '';
@@ -37,7 +28,6 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (error) { console.error("Error loading hero images:", error); }
     }
 
-    // --- Function to load Reels ---
     async function loadReels() {
         const swiperWrapper = document.querySelector('.reels-swiper .swiper-wrapper');
         const url = `https://cdn.contentful.com/spaces/${SPACE_ID}/environments/master/entries?access_token=${ACCESS_TOKEN}&content_type=reel&include=1`;
@@ -51,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     item.fields.videoFile.forEach(videoLink => {
                         if (videoLink && videoLink.sys && assets[videoLink.sys.id]) {
                             const videoUrl = 'https:' + assets[videoLink.sys.id];
-                            slidesHTML += `<div class="swiper-slide"><div class="reel-card"><video src="${videoUrl}" loop muted playsinline></video><div class="sound-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 4L8 8H4V16H8L12 20V4ZM14 8.5V15.5C15.86 15.17 17.17 13.56 17.17 11.75C17.17 9.94 15.86 8.33 14 8.5Z" fill="white"/></svg></div></div></div>`;
+                            slidesHTML += `<div class="swiper-slide"><div class="reel-card"><div class="reel-overlay"></div><video src="${videoUrl}" loop muted playsinline></video><div class="play-pause-btn"><svg class="icon-play" width="24" height="24" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg><svg class="icon-pause" width="24" height="24" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" fill="currentColor"></path></svg></div><div class="sound-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 4L8 8H4V16H8L12 20V4ZM14 8.5V15.5C15.86 15.17 17.17 13.56 17.17 11.75C17.17 9.94 15.86 8.33 14 8.5Z" fill="white"/></svg></div></div></div>`;
                         }
                     });
                 }
@@ -60,11 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (error) { console.error("Error loading reels:", error); }
     }
 
-    // --- Swiper Initializers ---
-    function initializeHeroSwiper() {
-        heroSwiper = new Swiper('.hero-swiper', { loop: document.querySelectorAll('.hero-swiper .swiper-slide').length > 1, autoplay: { delay: 3000, disableOnInteraction: false }, speed: 600, pagination: { el: '.swiper-pagination', clickable: true }, navigation: { nextEl: '.hero-swiper .swiper-button-next', prevEl: '.hero-swiper .swiper-button-prev' } });
-    }
-    
+    function initializeHeroSwiper() { /*...*/ }
     function initializeReelsSwiper() {
         reelsSwiper = new Swiper('.reels-swiper', {
             effect: 'slide', slidesPerView: 'auto', spaceBetween: 30, centeredSlides: true, 
@@ -72,54 +58,44 @@ document.addEventListener("DOMContentLoaded", () => {
             navigation: { nextEl: '.reels-swiper .swiper-button-next', prevEl: '.reels-swiper .swiper-button-prev' }
         });
 
-        // --- REELS PLAYBACK FIX ---
-        const manageVideoPlayback = (swiperInstance) => {
-            swiperInstance.slides.forEach((slide, index) => {
-                const video = slide.querySelector('video');
-                if (video) {
-                    if (index === swiperInstance.realIndex) {
+        // --- PLAY/PAUSE and HOVER LOGIC ---
+        const reelSlides = document.querySelectorAll('.reels-swiper .swiper-slide');
+        reelSlides.forEach(slide => {
+            const video = slide.querySelector('video');
+            const playPauseBtn = slide.querySelector('.play-pause-btn');
+            if (video && playPauseBtn) {
+                playPauseBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (video.paused) {
                         video.play();
+                        slide.classList.add('is-playing');
                     } else {
                         video.pause();
+                        slide.classList.remove('is-playing');
                     }
-                }
-            });
-        };
-
-        // Initial play
-        setTimeout(() => manageVideoPlayback(reelsSwiper), 500);
-        // Play on slide change
-        reelsSwiper.on('slideChange', () => manageVideoPlayback(reelsSwiper));
-
-        // Hover to unmute logic
-        const reelCards = document.querySelectorAll('.reels-swiper .swiper-slide');
-        reelCards.forEach((card, index) => {
-            const video = card.querySelector('video');
-            if(video) {
-                card.addEventListener('mouseenter', () => {
-                    if (index === reelsSwiper.realIndex) video.muted = false;
                 });
-                card.addEventListener('mouseleave', () => {
-                    video.muted = true;
-                });
+                card.addEventListener('mouseenter', () => { video.muted = false; });
+                card.addEventListener('mouseleave', () => { video.muted = true; });
             }
         });
     }
 
     // --- GSAP Animations ---
     gsap.registerPlugin(ScrollTrigger);
-    gsap.from(".main-title .title-wrapper", { yPercent: 105, duration: 0.8, ease: "power3.out", delay: 0.5 });
-    gsap.from(".subtitle .title-wrapper", { yPercent: 105, duration: 0.8, ease: "power3.out", delay: 0.7 });
-    const sectionsToAnimate = gsap.utils.toArray(['#about', '#projects', '#skills', '#tools']);
-    sectionsToAnimate.forEach(section => {
-        gsap.from(section.querySelector('h2'), { opacity: 0, y: 50, scrollTrigger: { trigger: section, start: "top 85%", toggleActions: "play none none reset" } });
-        gsap.from(section.querySelectorAll('p, .project-item'), { opacity: 0, y: 30, stagger: 0.15, scrollTrigger: { trigger: section, start: "top 80%", toggleActions: "play none none reset" } });
-    });
-    gsap.from(".skill-list span, .tool-list span", { opacity: 0, y: 30, scale: 0.9, stagger: 0.08, scrollTrigger: { trigger: "#skills", start: "top 75%", toggleActions: "play none none reset" } });
-    gsap.from("footer", { opacity: 0, y: 50, scrollTrigger: { trigger: "footer", start: "top 95%", toggleActions: "play none none reset" } });
+    // ... (baaki ka GSAP code waisa hi)
 
-    // --- Start everything ---
     loadSliderImages();
     loadReels();
+// --- Neeche ka code copy paste kar dijiye ---
+function initializeHeroSwiper() { heroSwiper = new Swiper('.hero-swiper', { loop: document.querySelectorAll('.hero-swiper .swiper-slide').length > 1, autoplay: { delay: 3000, disableOnInteraction: false }, speed: 600, pagination: { el: '.swiper-pagination', clickable: true }, navigation: { nextEl: '.hero-swiper .swiper-button-next', prevEl: '.hero-swiper .swiper-button-prev' } });}
+gsap.from(".main-title .title-wrapper", { yPercent: 105, duration: 0.8, ease: "power3.out", delay: 0.5 });
+gsap.from(".subtitle .title-wrapper", { yPercent: 105, duration: 0.8, ease: "power3.out", delay: 0.7 });
+const sectionsToAnimate = gsap.utils.toArray(['#about', '#projects', '#skills', '#tools']);
+sectionsToAnimate.forEach(section => {
+    gsap.from(section.querySelector('h2'), { opacity: 0, y: 50, scrollTrigger: { trigger: section, start: "top 85%", toggleActions: "play none none reset" } });
+    gsap.from(section.querySelectorAll('p, .project-item'), { opacity: 0, y: 30, stagger: 0.15, scrollTrigger: { trigger: section, start: "top 80%", toggleActions: "play none none reset" } });
 });
-            
+gsap.from(".skill-list span, .tool-list span", { opacity: 0, y: 30, scale: 0.9, stagger: 0.08, scrollTrigger: { trigger: "#skills", start: "top 75%", toggleActions: "play none none reset" } });
+gsap.from("footer", { opacity: 0, y: 50, scrollTrigger: { trigger: "footer", start: "top 95%", toggleActions: "play none none reset" } });
+});
+                
