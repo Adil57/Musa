@@ -140,4 +140,4 @@ document.addEventListener("DOMContentLoaded", () => {
     loadReels();
     loadProfilePhotos(); // Naya function call
 });
-        
+            
