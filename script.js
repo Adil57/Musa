@@ -15,30 +15,36 @@ document.addEventListener("DOMContentLoaded", () => {
             const response = await fetch(url);
             const data = await response.json();
 
-            if (!data.items || data.items.length === 0) {
-                 swiperWrapper.innerHTML = `<div class="swiper-slide"><p>No published entries found in Contentful.</p></div>`;
-                 return;
-            }
-
-            if (!data.includes || !data.includes.Asset) {
-                swiperWrapper.innerHTML = `<div class="swiper-slide"><p>Entries found, but linked photos are missing or not published. Please check the 'Media' tab in Contentful.</p></div>`;
+            if (!data.items || data.items.length === 0 || !data.includes || !data.includes.Asset) {
+                swiperWrapper.innerHTML = `<div class="swiper-slide"><p>No published content found.</p></div>`;
                 return;
             }
 
-            const assets = data.includes.Asset.reduce((acc, asset) => { acc[asset.sys.id] = asset.fields; return acc; }, {});
-            let slidesHTML = '';
+            const assets = data.includes.Asset.reduce((acc, asset) => {
+                acc[asset.sys.id] = asset.fields.file.url;
+                return acc;
+            }, {});
 
-            data.items.forEach(entry => {
-                if (entry.fields.photo && entry.fields.photo.sys) {
-                    const assetId = entry.fields.photo.sys.id;
-                    const imageFile = assets[assetId]?.file;
-                    if (imageFile) {
-                        const imageUrl = 'https:' + imageFile.url;
-                        slidesHTML += `<div class="swiper-slide"><img src="${imageUrl}" alt="Slider Image"></div>`;
-                    }
+            let slidesHTML = '';
+            
+            // --- THE FINAL FIX IS HERE ---
+            // Ab yeh code har entry ke andar multiple photos ko bhi handle karega
+            data.items.forEach(item => {
+                // Check if the photo field exists and is an array
+                if (item.fields.photo && Array.isArray(item.fields.photo)) {
+                    // Loop through each photo object in the array
+                    item.fields.photo.forEach(photoLink => {
+                        if (photoLink && photoLink.sys) {
+                            const photoId = photoLink.sys.id;
+                            const imageUrl = assets[photoId];
+                            if (imageUrl) {
+                                slidesHTML += `<div class="swiper-slide"><img src="https:${imageUrl}" alt="Slider Image"></div>`;
+                            }
+                        }
+                    });
                 }
             });
-            
+
             if (slidesHTML) {
                 swiperWrapper.innerHTML = slidesHTML;
                 initializeSwiper();
@@ -47,8 +53,8 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
         } catch (error) {
-            console.error("Error during Contentful fetch:", error);
-            swiperWrapper.innerHTML = `<div class="swiper-slide"><p>An error occurred. Check console.</p></div>`;
+            console.error("Error loading images:", error);
+            swiperWrapper.innerHTML = `<div class="swiper-slide"><p>An error occurred.</p></div>`;
         }
     }
 
@@ -57,10 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const slideCount = document.querySelectorAll('.swiper-slide').length;
         swiper = new Swiper('.swiper', {
             loop: slideCount > 1,
-            autoplay: {
-                delay: 3000,
-                disableOnInteraction: false,
-            },
+            autoplay: { delay: 3000, disableOnInteraction: false },
             speed: 600,
             pagination: { el: '.swiper-pagination', clickable: true },
             navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
@@ -84,4 +87,3 @@ document.addEventListener("DOMContentLoaded", () => {
 
     console.log("Musa's Portfolio Final Version Loaded!");
 });
-              
