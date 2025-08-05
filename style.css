@@ -5,16 +5,9 @@ body { background: linear-gradient(125deg, #1a0238, #0b1a3b, #2c0b31, #02252e); 
 /* Hero Image Slider */
 .slider-container { height: 45vh; width: 100%; background-color: transparent; }
 .swiper { width: 100%; height: 100%; }
-.hero-swiper .swiper-slide {
-    text-align: center;
-    /* THE FIX IS HERE */
-    background: transparent; /* Black background hata diya */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+.hero-swiper .swiper-slide { text-align: center; background: transparent; display: flex; justify-content: center; align-items: center; }
 .hero-swiper .swiper-slide img { display: block; width: 100%; height: 100%; object-fit: contain; }
-:root { --swiper-theme-color: #9f86ff; }
+:root { --swiper-theme-color: #ffffff; --swiper-navigation-size: 30px; }
 
 /* Main Content Layout */
 main { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
@@ -34,54 +27,27 @@ a { color: #9f86ff; text-decoration: none; font-weight: 500; }
 .title-wrapper { /* For animation */ }
 
 /* "My Work" Section Styling */
-#my-work {
-    padding-top: 20px;
-    width: 100vw;
-    position: relative;
-    left: 50%;
-    transform: translateX(-50%);
-}
-.reels-swiper {
-    width: 100%;
-    padding: 20px 0;
-    overflow: visible; 
-}
-.reels-swiper .swiper-slide {
-    width: 300px; 
-    height: 530px; 
-    border-radius: 16px;
-    overflow: hidden;
-    position: relative;
-    background: #222;
-    transition: transform 0.4s ease;
-}
-.reels-swiper .swiper-slide:hover {
-    transform: scale(1.05);
-    z-index: 10;
-}
-.reels-swiper video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-.reels-swiper .sound-icon {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    width: 30px;
-    height: 30px;
-    background-color: rgba(0,0,0,0.5);
-    border-radius: 50%;
-    z-index: 3;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.reels-swiper .swiper-slide:hover .sound-icon {
-    opacity: 1;
-}
+#my-work { padding-top: 20px; width: 100vw; position: relative; left: 50%; transform: translateX(-50%); }
+.reels-swiper { width: 100%; padding: 20px 0; overflow: visible; }
+.reels-swiper .swiper-slide { width: 300px; height: 530px; border-radius: 16px; overflow: hidden; position: relative; background: #222; transition: transform 0.4s ease; }
+.reels-swiper .swiper-slide:hover { transform: scale(1.05); z-index: 10; }
+.reels-swiper video { width: 100%; height: 100%; object-fit: cover; }
+.reels-swiper .reel-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.2); transition: background 0.3s; }
+.reels-swiper .swiper-slide:hover .reel-overlay { background: rgba(0,0,0,0.5); }
+.reels-swiper .play-pause-btn { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; background: rgba(0,0,0,0.6); border-radius: 50%; z-index: 4; border: 2px solid white; display: flex; justify-content: center; align-items: center; cursor: pointer; opacity: 0; transition: opacity 0.3s; }
+.reels-swiper .swiper-slide:hover .play-pause-btn { opacity: 1; }
+.reels-swiper .play-pause-btn svg { fill: white; }
+.reels-swiper .play-pause-btn .icon-pause { display: none; }
+.reels-swiper .swiper-slide.is-playing .play-pause-btn .icon-pause { display: block; }
+.reels-swiper .swiper-slide.is-playing .play-pause-btn .icon-play { display: none; }
+.reels-swiper .sound-icon { position: absolute; top: 15px; right: 15px; width: 30px; height: 30px; background-color: rgba(0,0,0,0.5); border-radius: 50%; z-index: 3; opacity: 0; transition: opacity 0.3s ease; display: flex; justify-content: center; align-items: center; }
+.reels-swiper .swiper-slide:hover .sound-icon { opacity: 1; }
+
+/* SLIDER ARROWS FIX */
+.reels-swiper .swiper-button-prev, .reels-swiper .swiper-button-next { color: #fff; background-color: rgba(0,0,0,0.3); width: 44px; height: 44px; border-radius: 50%; }
+.reels-swiper .swiper-button-prev::after, .reels-swiper .swiper-button-next::after { font-size: 20px; }
+.reels-swiper .swiper-button-prev { left: 10px; }
+.reels-swiper .swiper-button-next { right: 10px; }
 
 /* Other Sections */
 #about { text-align: center; }
@@ -94,4 +60,3 @@ a { color: #9f86ff; text-decoration: none; font-weight: 500; }
 footer { text-align: center; padding: 80px 20px; }
 .contact-button { background-color: #9f86ff; color: #121212; padding: 15px 30px; border-radius: 50px; font-size: 1.25rem; font-weight: 700; transition: transform 0.3s ease, box-shadow 0.3s ease; }
 .contact-button:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(159, 134, 255, 0.6); }
-    
