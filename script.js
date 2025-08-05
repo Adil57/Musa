@@ -39,33 +39,41 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             const assets = data.includes.Asset.reduce((acc, asset) => { acc[asset.sys.id] = asset.fields.file.url; return acc; }, {});
             let slidesHTML = '';
+
+            // --- THE FINAL FIX IS HERE ---
+            // Ab yeh code har entry ke andar multiple videos ko bhi handle karega
             data.items.forEach(item => {
-                if (item.fields.videoFile && item.fields.videoFile.sys && assets[item.fields.videoFile.sys.id]) {
-                    const videoUrl = 'https:' + assets[item.fields.videoFile.sys.id];
-                    slidesHTML += `
-                        <div class="swiper-slide">
-                            <div class="reel-card">
-                                <video src="${videoUrl}" autoplay loop muted playsinline></video>
-                                <div class="sound-icon">
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 4L8 8H4V16H8L12 20V4ZM14 8.5V15.5C15.86 15.17 17.17 13.56 17.17 11.75C17.17 9.94 15.86 8.33 14 8.5Z" fill="white"/></svg>
-                                </div>
-                            </div>
-                        </div>`;
+                if (item.fields.videoFile && Array.isArray(item.fields.videoFile)) {
+                    item.fields.videoFile.forEach(videoLink => {
+                        if (videoLink && videoLink.sys && assets[videoLink.sys.id]) {
+                            const videoUrl = 'https:' + assets[videoLink.sys.id];
+                            slidesHTML += `
+                                <div class="swiper-slide">
+                                    <div class="reel-card">
+                                        <video src="${videoUrl}" autoplay loop muted playsinline></video>
+                                        <div class="sound-icon">
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 4L8 8H4V16H8L12 20V4ZM14 8.5V15.5C15.86 15.17 17.17 13.56 17.17 11.75C17.17 9.94 15.86 8.33 14 8.5Z" fill="white"/></svg>
+                                        </div>
+                                    </div>
+                                </div>`;
+                        }
+                    });
                 }
             });
+
             if (slidesHTML) { swiperWrapper.innerHTML = slidesHTML; initializeReelsSwiper(); }
         } catch (error) { console.error("Error loading reels:", error); }
     }
 
     // --- Swiper Initializers ---
     function initializeHeroSwiper() {
-        const slideCount = document.querySelectorAll('.hero-swiper .swiper-slide').length;
-        heroSwiper = new Swiper('.hero-swiper', { loop: slideCount > 1, autoplay: { delay: 3000, disableOnInteraction: false }, speed: 600, pagination: { el: '.swiper-pagination', clickable: true }, navigation: { nextEl: '.hero-swiper .swiper-button-next', prevEl: '.hero-swiper .swiper-button-prev' } });
+        heroSwiper = new Swiper('.hero-swiper', { loop: document.querySelectorAll('.hero-swiper .swiper-slide').length > 1, autoplay: { delay: 3000, disableOnInteraction: false }, speed: 600, pagination: { el: '.swiper-pagination', clickable: true }, navigation: { nextEl: '.hero-swiper .swiper-button-next', prevEl: '.hero-swiper .swiper-button-prev' } });
     }
     
     function initializeReelsSwiper() {
         reelsSwiper = new Swiper('.reels-swiper', {
-            effect: 'slide', slidesPerView: 'auto', spaceBetween: 30, centeredSlides: true, loop: true,
+            effect: 'slide', slidesPerView: 'auto', spaceBetween: 30, centeredSlides: true, 
+            loop: document.querySelectorAll('.reels-swiper .swiper-slide').length > 1,
             navigation: { nextEl: '.reels-swiper .swiper-button-next', prevEl: '.reels-swiper .swiper-button-prev' }
         });
         const reelCards = document.querySelectorAll('.reels-swiper .swiper-slide');
@@ -94,4 +102,4 @@ document.addEventListener("DOMContentLoaded", () => {
     loadSliderImages();
     loadReels();
 });
-                    
+                             
