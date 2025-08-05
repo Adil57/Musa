@@ -1,10 +1,8 @@
-/* --- Basic Setup & NEW Animated Gradient Background --- */
+/* --- Basic Setup & Animated Gradient Background --- */
 body {
-    /* Naya Animated Gradient */
     background: linear-gradient(125deg, #1a0238, #0b1a3b, #2c0b31, #02252e);
     background-size: 400% 400%;
     animation: gradientFlow 15s ease infinite;
-
     color: #e0e0e0;
     font-family: 'Inter', sans-serif;
     margin: 0;
@@ -13,7 +11,6 @@ body {
     overflow-x: hidden;
 }
 
-/* Keyframes for the gradient animation */
 @keyframes gradientFlow {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
@@ -25,8 +22,6 @@ main {
     max-width: 1000px;
     margin: 0 auto;
     padding: 0 40px;
-    position: relative;
-    z-index: 1;
 }
 
 section {
@@ -44,7 +39,9 @@ h1 {
     margin: 0;
     line-height: 1.1;
     color: #ffffff;
-    text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+    text-shadow: 0 0 20px rgba(0, 0, 0, 0.5); /* Text par shadow readability ke liye */
+    position: relative;
+    z-index: 2; /* Text slider ke upar rahega */
 }
 
 h2 {
@@ -62,7 +59,7 @@ p {
 }
 
 a {
-    color: #9f86ff; /* New accent color */
+    color: #9f86ff;
     text-decoration: none;
     font-weight: 500;
 }
@@ -73,64 +70,55 @@ a {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    position: relative; /* Zaroori hai slider ko position karne ke liye */
+    overflow: hidden; /* Slider bahar na nikle */
+}
+
+#hero::after { /* Image ke upar dark overlay */
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 1;
 }
 
 .line {
     overflow: hidden;
 }
 
-/* --- Projects List Styling --- */
-.project-list {
+/* --- NEW: Hero Slider Styling --- */
+.hero-slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 500%; /* 4 images + 1 duplicate */
+    height: 100%;
     display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-.project-item {
-    font-size: 1.5rem;
-    color: #f0f0f0;
-    transition: transform 0.3s ease, color 0.3s ease;
-}
-.project-item:hover {
-    transform: translateX(10px);
-    color: #9f86ff;
+    z-index: 0; /* Text aur overlay ke peeche */
 }
 
-/* --- Skills & Tools List Styling (Tag/Badge style) --- */
-.skill-list, .tool-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-}
-.skill-list span, .tool-list span {
-    background-color: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 10px 20px;
-    border-radius: 20px;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
-}
-.skill-list span:hover, .tool-list span:hover {
-    background-color: #9f86ff;
-    color: #121212;
-    border-color: #9f86ff;
+.slide {
+    width: 20%; /* Har slide ki width */
+    height: 100%;
 }
 
-/* --- Footer & Contact Button --- */
-footer {
-    text-align: center;
-    padding: 80px 20px;
+.slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Image poori space legi bina stretch hue */
 }
-.contact-button {
-    background-color: #9f86ff;
-    color: #121212;
-    padding: 15px 30px;
-    border-radius: 50px;
-    font-size: 1.25rem;
-    font-weight: 700;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-.contact-button:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 25px rgba(159, 134, 255, 0.6);
-    }
-    
+
+/* -- Projects, Skills, Tools, Footer (No Changes) -- */
+.project-list { display: flex; flex-direction: column; gap: 20px; }
+.project-item { font-size: 1.5rem; color: #f0f0f0; transition: transform 0.3s ease, color 0.3s ease; }
+.project-item:hover { transform: translateX(10px); color: #9f86ff; }
+.skill-list, .tool-list { display: flex; flex-wrap: wrap; gap: 15px; }
+.skill-list span, .tool-list span { background-color: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); padding: 10px 20px; border-radius: 20px; font-size: 1rem; transition: background-color 0.3s ease; }
+.skill-list span:hover, .tool-list span:hover { background-color: #9f86ff; color: #121212; border-color: #9f86ff; }
+footer { text-align: center; padding: 80px 20px; }
+.contact-button { background-color: #9f86ff; color: #121212; padding: 15px 30px; border-radius: 50px; font-size: 1.25rem; font-weight: 700; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.contact-button:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(159, 134, 255, 0.6); }
+
