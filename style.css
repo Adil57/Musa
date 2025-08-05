@@ -1,6 +1,10 @@
-/* --- Basic Setup & Dark Theme --- */
+/* --- Basic Setup & NEW Animated Gradient Background --- */
 body {
-    background-color: #121212;
+    /* Naya Animated Gradient */
+    background: linear-gradient(125deg, #1a0238, #0b1a3b, #2c0b31, #02252e);
+    background-size: 400% 400%;
+    animation: gradientFlow 15s ease infinite;
+
     color: #e0e0e0;
     font-family: 'Inter', sans-serif;
     margin: 0;
@@ -9,49 +13,25 @@ body {
     overflow-x: hidden;
 }
 
-/* --- BACKGROUND BLUR CIRCLES --- */
-.bg-blur-circle {
-    position: fixed;
-    z-index: -1; /* Content ke peeche rahenge */
-    border-radius: 50%;
-    filter: blur(150px); /* Blur effect */
-    opacity: 0.15;
+/* Keyframes for the gradient animation */
+@keyframes gradientFlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
-.circle1 {
-    width: 400px;
-    height: 400px;
-    top: -100px;
-    left: -100px;
-    background-color: #00aaff; /* Blue color */
-}
-.circle2 {
-    width: 300px;
-    height: 300px;
-    bottom: -50px;
-    right: -50px;
-    background-color: #ff00ff; /* Magenta color */
-}
-.circle3 {
-    width: 250px;
-    height: 250px;
-    top: 50%;
-    left: 40%;
-    background-color: #00ffaa; /* Green-ish color */
-}
-
 
 /* --- Main Content Layout --- */
 main {
     max-width: 1000px;
     margin: 0 auto;
     padding: 0 40px;
-    position: relative; /* Zaroori hai taki content circles ke upar rahe */
+    position: relative;
     z-index: 1;
 }
 
 section {
     padding: 120px 0;
-    border-bottom: 1px solid #222;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 section:last-of-type, #hero {
     border-bottom: none;
@@ -59,11 +39,12 @@ section:last-of-type, #hero {
 
 /* --- Typography (Text Styling) --- */
 h1 {
-    /* RESPONSIVE FONT SIZE: Ab yeh screen size ke hisaab se adjust hoga */
     font-size: clamp(2.8rem, 8vw, 5rem);
     font-weight: 700;
     margin: 0;
     line-height: 1.1;
+    color: #ffffff;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
 }
 
 h2 {
@@ -77,10 +58,11 @@ p {
     font-size: 1.125rem;
     line-height: 1.6;
     max-width: 800px;
+    color: #c0c0c0;
 }
 
 a {
-    color: #00aaff;
+    color: #9f86ff; /* New accent color */
     text-decoration: none;
     font-weight: 500;
 }
@@ -105,10 +87,12 @@ a {
 }
 .project-item {
     font-size: 1.5rem;
-    transition: transform 0.3s ease;
+    color: #f0f0f0;
+    transition: transform 0.3s ease, color 0.3s ease;
 }
 .project-item:hover {
     transform: translateX(10px);
+    color: #9f86ff;
 }
 
 /* --- Skills & Tools List Styling (Tag/Badge style) --- */
@@ -118,15 +102,17 @@ a {
     gap: 15px;
 }
 .skill-list span, .tool-list span {
-    background-color: #222;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     padding: 10px 20px;
     border-radius: 20px;
     font-size: 1rem;
     transition: background-color 0.3s ease;
 }
 .skill-list span:hover, .tool-list span:hover {
-    background-color: #00aaff;
+    background-color: #9f86ff;
     color: #121212;
+    border-color: #9f86ff;
 }
 
 /* --- Footer & Contact Button --- */
@@ -135,7 +121,7 @@ footer {
     padding: 80px 20px;
 }
 .contact-button {
-    background-color: #00aaff;
+    background-color: #9f86ff;
     color: #121212;
     padding: 15px 30px;
     border-radius: 50px;
@@ -145,6 +131,6 @@ footer {
 }
 .contact-button:hover {
     transform: scale(1.05);
-    box-shadow: 0 0 20px rgba(0, 170, 255, 0.5);
-        }
+    box-shadow: 0 0 25px rgba(159, 134, 255, 0.6);
+    }
     
