@@ -48,42 +48,20 @@ a { color: #9f86ff; text-decoration: none; font-weight: 500; }
 .reels-swiper .swiper-button-prev { left: 10px; }
 .reels-swiper .swiper-button-next { right: 10px; }
 
-/* --- NEW: About Me Section Styling --- */
-.about-container {
-    display: flex;
-    align-items: center;
-    gap: 50px;
-    max-width: 1000px;
-    margin: 0 auto;
-}
-.about-photo {
-    flex-shrink: 0;
-}
-.about-photo img {
-    width: 250px;
-    height: 250px;
-    border-radius: 50%; /* Gol photo */
-    object-fit: cover;
-    border: 5px solid #333;
-}
-.about-text p {
-    text-align: left;
-    margin-bottom: 20px;
-}
-.about-text p:last-child {
-    margin-bottom: 0;
-}
-/* Mobile view ke liye */
+/* --- About Me Section Styling --- */
+.about-container { display: flex; align-items: center; gap: 50px; max-width: 1000px; margin: 0 auto; }
+.about-photos { position: relative; width: 300px; height: 250px; flex-shrink: 0; }
+.profile-pic { width: 200px; height: 200px; border-radius: 50%; object-fit: cover; /* Yahan cover use kiya hai for a good crop */ border: 5px solid #444; position: absolute; transition: transform 0.3s ease; }
+.profile-pic:hover { z-index: 3; transform: scale(1.1); }
+.pic1 { top: 0; left: 0; z-index: 2; }
+.pic2 { bottom: 0; right: 40px; z-index: 1; }
+.about-text p { text-align: left; margin-bottom: 20px; }
+.about-text p:last-child { margin-bottom: 0; }
 @media (max-width: 768px) {
-    .about-container {
-        flex-direction: column; /* Photo upar, text neeche */
-        text-align: center;
-    }
-    .about-text p {
-        text-align: center;
-    }
+    .about-container { flex-direction: column; text-align: center; }
+    .about-photos { margin-bottom: 40px; transform: scale(0.9); }
+    .about-text p { text-align: center; }
 }
-
 
 /* Other Sections */
 #projects { text-align: center; }
@@ -99,4 +77,5 @@ footer { text-align: center; padding: 80px 20px; }
 .contact-button:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(159, 134, 255, 0.6); }
 .email-button { background-color: #4b4b4b; color: #ffffff; }
 .email-button:hover { background-color: #606060; }
-    
+
+                             
