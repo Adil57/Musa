@@ -3,7 +3,43 @@ document.addEventListener("DOMContentLoaded", () => {
     const ACCESS_TOKEN = 'ANeTj3WEegFMYrW8Rqj-VbSQe7vPncMdF1Ow1ZZruk0';
     let heroSwiper, reelsSwiper;
 
-    // --- Contentful Functions (No Change) ---
+    // --- Function to load Profile Photos ---
+    async function loadProfilePhotos() {
+        const photoContainer = document.querySelector('.about-photos');
+        const url = `https://cdn.contentful.com/spaces/${SPACE_ID}/environments/master/entries?access_token=${ACCESS_TOKEN}&content_type=profilePhoto&include=1`;
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            if (!data.items || data.items.length === 0 || !data.includes || !data.includes.Asset) return;
+
+            const assets = data.includes.Asset.reduce((acc, asset) => {
+                acc[asset.sys.id] = asset.fields.file.url;
+                return acc;
+            }, {});
+
+            let photosHTML = '';
+            const photoLinks = data.items[0].fields.images; // Assuming only one entry for profile photos
+
+            if (photoLinks && Array.isArray(photoLinks)) {
+                photoLinks.forEach((link, index) => {
+                    if (link && link.sys && assets[link.sys.id]) {
+                        const imageUrl = 'https:' + assets[link.sys.id];
+                        photosHTML += `<img src="${imageUrl}" alt="Musa's Photo ${index + 1}" class="profile-pic pic${index + 1}">`;
+                    }
+                });
+            }
+
+            if (photosHTML) {
+                photoContainer.innerHTML = photosHTML;
+            }
+
+        } catch (error) {
+            console.error("Error loading profile photos:", error);
+        }
+    }
+
+
+    // --- Other Contentful Functions (No Change) ---
     async function loadSliderImages() {
         const swiperWrapper = document.querySelector('.hero-swiper .swiper-wrapper');
         const url = `https://cdn.contentful.com/spaces/${SPACE_ID}/environments/master/entries?access_token=${ACCESS_TOKEN}&content_type=sliderImage&include=1`;
@@ -81,39 +117,22 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // --- GSAP Animations ---
+    // --- GSAP Animations (No Change) ---
     gsap.registerPlugin(ScrollTrigger);
-    
-    // Title animation
     gsap.from(".main-title .title-wrapper", { yPercent: 105, duration: 0.8, ease: "power3.out", delay: 0.5 });
     gsap.from(".subtitle .title-wrapper", { yPercent: 105, duration: 0.8, ease: "power3.out", delay: 0.7 });
-    
-    // --- THE FIX IS HERE ---
-    // Replaying batch animation
-    const animatedElements = gsap.utils.toArray('h2, #about p, .project-item, .skill-list span, .tool-list span, footer');
-
-    // Pehle sabko invisible set kar do
+    const animatedElements = gsap.utils.toArray('h2, #about p, .project-item, .skill-list span, .tool-list span, footer, .about-photos');
     gsap.set(animatedElements, { opacity: 0, y: 50 });
-
     ScrollTrigger.batch(animatedElements, {
         interval: 0.1,
         batchMax: 4,
-        onEnter: batch => gsap.to(batch, {
-            opacity: 1,
-            y: 0,
-            stagger: 0.15,
-            ease: "power2.out",
-            duration: 0.8
-        }),
-        // Jab upar scroll karo, toh wapas invisible kar do taaki neeche aane par phir se animate ho
-        onLeaveBack: batch => gsap.set(batch, {
-            opacity: 0,
-            y: 50
-        }),
+        onEnter: batch => gsap.to(batch, { opacity: 1, y: 0, stagger: 0.15, ease: "power2.out", duration: 0.8 }),
+        onLeaveBack: batch => gsap.set(batch, { opacity: 0, y: 50 }),
     });
 
     // --- Start everything ---
     loadSliderImages();
     loadReels();
+    loadProfilePhotos(); // Naya function call
 });
-                                
+                
