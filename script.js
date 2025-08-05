@@ -88,19 +88,27 @@ document.addEventListener("DOMContentLoaded", () => {
     gsap.from(".main-title .title-wrapper", { yPercent: 105, duration: 0.8, ease: "power3.out", delay: 0.5 });
     gsap.from(".subtitle .title-wrapper", { yPercent: 105, duration: 0.8, ease: "power3.out", delay: 0.7 });
     
-    // --- THE PERFORMANCE FIX IS HERE ---
-    // Saare scroll animations ko ek saath 'batch' kar diya hai
+    // --- THE FIX IS HERE ---
+    // Replaying batch animation
     const animatedElements = gsap.utils.toArray('h2, #about p, .project-item, .skill-list span, .tool-list span, footer');
 
+    // Pehle sabko invisible set kar do
+    gsap.set(animatedElements, { opacity: 0, y: 50 });
+
     ScrollTrigger.batch(animatedElements, {
-        interval: 0.1, // thoda sa gap har animation ke beech
-        batchMax: 4,   // ek baar mein max 4 elements animate honge
-        once: true,    // animation sirf ek baar chalega
-        onEnter: batch => gsap.from(batch, {
-            opacity: 0,
-            y: 50,
+        interval: 0.1,
+        batchMax: 4,
+        onEnter: batch => gsap.to(batch, {
+            opacity: 1,
+            y: 0,
             stagger: 0.15,
             ease: "power2.out",
+            duration: 0.8
+        }),
+        // Jab upar scroll karo, toh wapas invisible kar do taaki neeche aane par phir se animate ho
+        onLeaveBack: batch => gsap.set(batch, {
+            opacity: 0,
+            y: 50
         }),
     });
 
@@ -108,4 +116,4 @@ document.addEventListener("DOMContentLoaded", () => {
     loadSliderImages();
     loadReels();
 });
-                          
+                                
