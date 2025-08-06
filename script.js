@@ -3,48 +3,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const ACCESS_TOKEN = 'ANeTj3WEegFMYrW8Rqj-VbSQe7vPncMdF1Ow1ZZruk0';
     let heroSwiper, reelsSwiper;
 
-    // --- Function to load Profile Photos ---
-    async function loadProfilePhotos() {
-        const photoContainer = document.querySelector('.about-photos');
-        const url = `https://cdn.contentful.com/spaces/${SPACE_ID}/environments/master/entries?access_token=${ACCESS_TOKEN}&content_type=profilePhoto&include=1`;
-        try {
-            const response = await fetch(url);
-            const data = await response.json();
-            if (!data.items || data.items.length === 0 || !data.includes || !data.includes.Asset) return;
-
-            const assets = data.includes.Asset.reduce((acc, asset) => {
-                acc[asset.sys.id] = asset.fields.file.url;
-                return acc;
-            }, {});
-
-            let photosHTML = '';
-
-            // --- THE FINAL FIX IS HERE ---
-            // Ab yeh code har entry ke andar multiple photos ko bhi handle karega
-            data.items.forEach(item => {
-                const photoLinks = item.fields.images; // Field ID is 'images'
-                if (photoLinks && Array.isArray(photoLinks)) {
-                    photoLinks.forEach((link, index) => {
-                        if (link && link.sys && assets[link.sys.id]) {
-                            const imageUrl = 'https:' + assets[link.sys.id];
-                            // CSS classes will be pic1, pic2, etc.
-                            photosHTML += `<img src="${imageUrl}" alt="Musa's Photo ${index + 1}" class="profile-pic pic${index + 1}">`;
-                        }
-                    });
-                }
-            });
-
-            if (photosHTML) {
-                photoContainer.innerHTML = photosHTML;
-            }
-
-        } catch (error) {
-            console.error("Error loading profile photos:", error);
-        }
-    }
-
-
-    // --- Other Contentful Functions (No Change) ---
     async function loadSliderImages() {
         const swiperWrapper = document.querySelector('.hero-swiper .swiper-wrapper');
         const url = `https://cdn.contentful.com/spaces/${SPACE_ID}/environments/master/entries?access_token=${ACCESS_TOKEN}&content_type=sliderImage&include=1`;
@@ -87,8 +45,31 @@ document.addEventListener("DOMContentLoaded", () => {
             if (slidesHTML) { swiperWrapper.innerHTML = slidesHTML; initializeReelsSwiper(); }
         } catch (error) { console.error("Error loading reels:", error); }
     }
+    
+    async function loadProfilePhotos() {
+        const photoContainer = document.querySelector('.about-photos');
+        const url = `https://cdn.contentful.com/spaces/${SPACE_ID}/environments/master/entries?access_token=${ACCESS_TOKEN}&content_type=profilePhoto&include=1`;
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            if (!data.items || data.items.length === 0 || !data.includes || !data.includes.Asset) return;
+            const assets = data.includes.Asset.reduce((acc, asset) => { acc[asset.sys.id] = asset.fields.file.url; return acc; }, {});
+            let photosHTML = '';
+            data.items.forEach(item => {
+                const photoLinks = item.fields.images;
+                if (photoLinks && Array.isArray(photoLinks)) {
+                    photoLinks.forEach((link, index) => {
+                        if (link && link.sys && assets[link.sys.id]) {
+                            const imageUrl = 'https:' + assets[link.sys.id];
+                            photosHTML += `<img src="${imageUrl}" alt="Musa's Photo ${index + 1}" class="profile-pic pic${index + 1}">`;
+                        }
+                    });
+                }
+            });
+            if (photosHTML) { photoContainer.innerHTML = photosHTML; }
+        } catch (error) { console.error("Error loading profile photos:", error); }
+    }
 
-    // --- Swiper Initializers (No Change) ---
     function initializeHeroSwiper() {
         heroSwiper = new Swiper('.hero-swiper', { loop: document.querySelectorAll('.hero-swiper .swiper-slide').length > 1, autoplay: { delay: 3000, disableOnInteraction: false }, speed: 600, pagination: { el: '.swiper-pagination', clickable: true }, navigation: { nextEl: '.hero-swiper .swiper-button-next', prevEl: '.hero-swiper .swiper-button-prev' } });
     }
@@ -122,22 +103,36 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // --- GSAP Animations (No Change) ---
     gsap.registerPlugin(ScrollTrigger);
+    
     gsap.from(".main-title .title-wrapper", { yPercent: 105, duration: 0.8, ease: "power3.out", delay: 0.5 });
     gsap.from(".subtitle .title-wrapper", { yPercent: 105, duration: 0.8, ease: "power3.out", delay: 0.7 });
+    
+    // --- FINAL ANIMATION FIX (Replaying + Smooth) ---
     const animatedElements = gsap.utils.toArray('h2, #about p, .project-item, .skill-list span, .tool-list span, footer, .about-photos');
+
+    // Pehle sabko invisible set kar do taaki woh replay ho sakein
     gsap.set(animatedElements, { opacity: 0, y: 50 });
+
     ScrollTrigger.batch(animatedElements, {
         interval: 0.1,
         batchMax: 4,
-        onEnter: batch => gsap.to(batch, { opacity: 1, y: 0, stagger: 0.15, ease: "power2.out", duration: 0.8 }),
-        onLeaveBack: batch => gsap.set(batch, { opacity: 0, y: 50 }),
+        onEnter: batch => gsap.to(batch, {
+            opacity: 1,
+            y: 0,
+            stagger: 0.15,
+            ease: "power2.out",
+            duration: 0.8,
+            overwrite: true
+        }),
+        onLeaveBack: batch => gsap.set(batch, {
+            opacity: 0,
+            y: 50
+        }),
     });
 
-    // --- Start everything ---
     loadSliderImages();
     loadReels();
-    loadProfilePhotos(); // Naya function call
+    loadProfilePhotos();
 });
-            
+                                
