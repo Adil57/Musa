@@ -108,12 +108,9 @@ document.addEventListener("DOMContentLoaded", () => {
     gsap.from(".main-title .title-wrapper", { yPercent: 105, duration: 0.8, ease: "power3.out", delay: 0.5 });
     gsap.from(".subtitle .title-wrapper", { yPercent: 105, duration: 0.8, ease: "power3.out", delay: 0.7 });
     
-    // --- FINAL ANIMATION FIX (Replaying + Smooth) ---
+    // --- FINAL ANIMATION (Replaying + Smooth) ---
     const animatedElements = gsap.utils.toArray('h2, #about p, .project-item, .skill-list span, .tool-list span, footer, .about-photos');
-
-    // Pehle sabko invisible set kar do taaki woh replay ho sakein
     gsap.set(animatedElements, { opacity: 0, y: 50 });
-
     ScrollTrigger.batch(animatedElements, {
         interval: 0.1,
         batchMax: 4,
@@ -127,7 +124,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }),
         onLeaveBack: batch => gsap.set(batch, {
             opacity: 0,
-            y: 50
+            y: 50,
+            overwrite: true
         }),
     });
 
