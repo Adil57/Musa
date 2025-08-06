@@ -108,23 +108,23 @@ document.addEventListener("DOMContentLoaded", () => {
     gsap.from(".main-title .title-wrapper", { yPercent: 105, duration: 0.8, ease: "power3.out", delay: 0.5 });
     gsap.from(".subtitle .title-wrapper", { yPercent: 105, duration: 0.8, ease: "power3.out", delay: 0.7 });
     
-    // --- FINAL ANIMATION (Replaying + Smooth) ---
-    const animatedElements = gsap.utils.toArray('h2, #about p, .project-item, .skill-list span, .tool-list span, footer, .about-photos');
-    gsap.set(animatedElements, { opacity: 0, y: 50 });
+    // --- FINAL PERFORMANCE ANIMATION (SIMPLE FADE-IN) ---
+    // Humne selectors ko simple kar diya hai aur 'y' animation hata diya hai
+    const animatedElements = gsap.utils.toArray('h2, .about-container, .project-list, .skill-list, .tool-list, footer');
+
+    // Pehle sabko invisible set kar do
+    gsap.set(animatedElements, { opacity: 0 });
+
     ScrollTrigger.batch(animatedElements, {
         interval: 0.1,
-        batchMax: 4,
         onEnter: batch => gsap.to(batch, {
             opacity: 1,
-            y: 0,
             stagger: 0.15,
-            ease: "power2.out",
-            duration: 0.8,
+            duration: 1,
             overwrite: true
         }),
         onLeaveBack: batch => gsap.set(batch, {
             opacity: 0,
-            y: 50,
             overwrite: true
         }),
     });
@@ -133,4 +133,4 @@ document.addEventListener("DOMContentLoaded", () => {
     loadReels();
     loadProfilePhotos();
 });
-                                
+                
