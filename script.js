@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const ACCESS_TOKEN = 'ANeTj3WEegFMYrW8Rqj-VbSQe7vPncMdF1Ow1ZZruk0';
     let heroSwiper, reelsSwiper;
 
-    // --- NEW: Function to load Site Logo ---
+    // --- NEW CORRECTED LOGO FUNCTION ---
     async function loadLogo() {
         const logoContainer = document.querySelector('.nav-logo');
         const url = `https://cdn.contentful.com/spaces/${SPACE_ID}/environments/master/entries?access_token=${ACCESS_TOKEN}&content_type=siteLogo&include=1`;
@@ -11,10 +11,21 @@ document.addEventListener("DOMContentLoaded", () => {
             const response = await fetch(url);
             const data = await response.json();
             if (!data.items || data.items.length === 0 || !data.includes || !data.includes.Asset) return;
-            const logoAsset = data.includes.Asset[0];
-            if (logoAsset) {
-                const imageUrl = 'https:' + logoAsset.fields.file.url;
-                logoContainer.innerHTML = `<img src="${imageUrl}" alt="M4SHOOTS Logo">`;
+
+            // Create a map of assets for easy lookup
+            const assets = data.includes.Asset.reduce((acc, asset) => {
+                acc[asset.sys.id] = asset.fields.file.url;
+                return acc;
+            }, {});
+
+            const logoEntry = data.items[0]; // Assuming there is only one logo entry
+
+            if (logoEntry.fields.logoImage && logoEntry.fields.logoImage.sys) {
+                const logoId = logoEntry.fields.logoImage.sys.id;
+                const imageUrl = assets[logoId];
+                if (imageUrl) {
+                    logoContainer.innerHTML = `<img src="https:${imageUrl}" alt="M4SHOOTS Logo">`;
+                }
             }
         } catch (error) {
             console.error("Error loading logo:", error);
@@ -133,7 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // --- Start everything ---
-    loadLogo(); // Naya function call
+    loadLogo();
     loadSliderImages();
     loadReels();
     loadProfilePhotos();
