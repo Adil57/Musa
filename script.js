@@ -3,6 +3,24 @@ document.addEventListener("DOMContentLoaded", () => {
     const ACCESS_TOKEN = 'ANeTj3WEegFMYrW8Rqj-VbSQe7vPncMdF1Ow1ZZruk0';
     let heroSwiper, reelsSwiper;
 
+    // --- NEW: Function to load Site Logo ---
+    async function loadLogo() {
+        const logoContainer = document.querySelector('.nav-logo');
+        const url = `https://cdn.contentful.com/spaces/${SPACE_ID}/environments/master/entries?access_token=${ACCESS_TOKEN}&content_type=siteLogo&include=1`;
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            if (!data.items || data.items.length === 0 || !data.includes || !data.includes.Asset) return;
+            const logoAsset = data.includes.Asset[0];
+            if (logoAsset) {
+                const imageUrl = 'https:' + logoAsset.fields.file.url;
+                logoContainer.innerHTML = `<img src="${imageUrl}" alt="M4SHOOTS Logo">`;
+            }
+        } catch (error) {
+            console.error("Error loading logo:", error);
+        }
+    }
+
     async function loadSliderImages() {
         const swiperWrapper = document.querySelector('.hero-swiper .swiper-wrapper');
         const url = `https://cdn.contentful.com/spaces/${SPACE_ID}/environments/master/entries?access_token=${ACCESS_TOKEN}&content_type=sliderImage&include=1`;
@@ -104,33 +122,19 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     gsap.registerPlugin(ScrollTrigger);
-    
     gsap.from(".main-title .title-wrapper", { yPercent: 105, duration: 0.8, ease: "power3.out", delay: 0.5 });
     gsap.from(".subtitle .title-wrapper", { yPercent: 105, duration: 0.8, ease: "power3.out", delay: 0.7 });
-    
-    // --- FINAL PERFORMANCE ANIMATION (SIMPLE FADE-IN) ---
-    // Humne selectors ko simple kar diya hai aur 'y' animation hata diya hai
-    const animatedElements = gsap.utils.toArray('h2, .about-container, .project-list, .skill-list, .tool-list, footer');
-
-    // Pehle sabko invisible set kar do
-    gsap.set(animatedElements, { opacity: 0 });
-
+    const animatedElements = gsap.utils.toArray('h2, #about p, .project-item, .skill-list span, .tool-list span, footer, .about-photos');
+    gsap.set(animatedElements, { opacity: 0, y: 50 });
     ScrollTrigger.batch(animatedElements, {
-        interval: 0.1,
-        onEnter: batch => gsap.to(batch, {
-            opacity: 1,
-            stagger: 0.15,
-            duration: 1,
-            overwrite: true
-        }),
-        onLeaveBack: batch => gsap.set(batch, {
-            opacity: 0,
-            overwrite: true
-        }),
+        interval: 0.1, batchMax: 4,
+        onEnter: batch => gsap.to(batch, { opacity: 1, y: 0, stagger: 0.15, ease: "power2.out", duration: 0.8 }),
+        onLeaveBack: batch => gsap.set(batch, { opacity: 0, y: 50 }),
     });
 
+    // --- Start everything ---
+    loadLogo(); // Naya function call
     loadSliderImages();
     loadReels();
     loadProfilePhotos();
 });
-                
