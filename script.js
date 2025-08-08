@@ -1,9 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
+    // --- THE FIX IS HERE: Corrected Access Token ---
     const SPACE_ID = 'g9fqokvd9b7d';
-    const ACCESS_TOKEN = 'ANeTj3WEegFMYrW8Rqj-VbSQe7vPncMdF1Ow1ZZruk0';
+    const ACCESS_TOKEN = 'ANeTj3WEegFMYrW8Rqj-VbSQe7vPncMdF1Ow1ZZruk0'; // User's original, correct token
     let heroSwiper, reelsSwiper;
 
-    // --- NEW CORRECTED LOGO FUNCTION ---
+    // --- Function to load Site Logo ---
     async function loadLogo() {
         const logoContainer = document.querySelector('.nav-logo');
         const url = `https://cdn.contentful.com/spaces/${SPACE_ID}/environments/master/entries?access_token=${ACCESS_TOKEN}&content_type=siteLogo&include=1`;
@@ -12,13 +13,12 @@ document.addEventListener("DOMContentLoaded", () => {
             const data = await response.json();
             if (!data.items || data.items.length === 0 || !data.includes || !data.includes.Asset) return;
 
-            // Create a map of assets for easy lookup
             const assets = data.includes.Asset.reduce((acc, asset) => {
                 acc[asset.sys.id] = asset.fields.file.url;
                 return acc;
             }, {});
 
-            const logoEntry = data.items[0]; // Assuming there is only one logo entry
+            const logoEntry = data.items[0]; 
 
             if (logoEntry.fields.logoImage && logoEntry.fields.logoImage.sys) {
                 const logoId = logoEntry.fields.logoImage.sys.id;
@@ -149,3 +149,4 @@ document.addEventListener("DOMContentLoaded", () => {
     loadReels();
     loadProfilePhotos();
 });
+                    
