@@ -2,27 +2,37 @@
 body { background: linear-gradient(125deg, #1a0238, #0b1a3b, #2c0b31, #02252e); background-size: 400% 400%; animation: gradientFlow 15s ease infinite; color: #e0e0e0; font-family: 'Inter', sans-serif; margin: 0; padding: 0; box-sizing: border-box; overflow-x: hidden; }
 @keyframes gradientFlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
+/* --- NEW HEADER STYLING --- */
+#main-nav {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    box-sizing: border-box;
+}
+.nav-brand {
+    font-family: 'Lobster', cursive;
+    font-size: 2rem;
+    color: #fff;
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+}
+.nav-logo img {
+    height: 50px; /* Chota logo */
+    width: auto;
+}
+
 /* Hero Image Slider */
 .slider-container { height: 45vh; width: 100%; background-color: transparent; }
 @media (min-width: 769px) { .slider-container { width: 100vw; position: relative; left: 50%; transform: translateX(-50%); } }
 .swiper { width: 100%; height: 100%; }
 .hero-swiper .swiper-slide { text-align: center; background: transparent; display: flex; justify-content: center; align-items: center; }
-
-/* --- THE FINAL FIX IS HERE --- */
-/* Default for mobile */
-.hero-swiper .swiper-slide img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-}
-/* For desktop */
-@media (min-width: 769px) {
-    .hero-swiper .swiper-slide img {
-        object-fit: cover; /* PC par image poori jagah legi */
-    }
-}
-
+.hero-swiper .swiper-slide img { display: block; width: 100%; height: 100%; object-fit: contain; will-change: transform; }
+@media (min-width: 769px) { .hero-swiper .swiper-slide img { object-fit: cover; } }
 :root { --swiper-theme-color: #ffffff; --swiper-navigation-size: 30px; }
 
 /* Main Content Layout */
@@ -46,7 +56,7 @@ a { color: #9f86ff; text-decoration: none; font-weight: 500; }
 /* "My Work" Section Styling */
 #my-work { padding-top: 20px; width: 100vw; position: relative; left: 50%; transform: translateX(-50%); }
 .reels-swiper { width: 100%; padding: 20px 0; overflow: visible; }
-.reels-swiper .swiper-slide { width: 300px; height: 530px; border-radius: 16px; overflow: hidden; position: relative; background: #222; transition: transform 0.4s ease; }
+.reels-swiper .swiper-slide { width: 300px; height: 530px; border-radius: 16px; overflow: hidden; position: relative; background: #222; transition: transform 0.4s ease; will-change: transform; }
 .reels-swiper .swiper-slide:hover { transform: scale(1.05); z-index: 10; }
 .reels-swiper video { width: 100%; height: 100%; object-fit: cover; }
 .reels-swiper .reel-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.2); transition: background 0.3s; }
@@ -93,4 +103,4 @@ footer { text-align: center; padding: 80px 20px; }
 .contact-button:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(159, 134, 255, 0.6); }
 .email-button { background-color: #4b4b4b; color: #ffffff; }
 .email-button:hover { background-color: #606060; }
-                             
+    
