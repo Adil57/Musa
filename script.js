@@ -1,10 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // --- THE FIX IS HERE: Corrected Access Token ---
     const SPACE_ID = 'g9fqokvd9b7d';
-    const ACCESS_TOKEN = 'ANeTj3WEegFMYrW8Rqj-VbSQe7vPncMdF1Ow1ZZruk0'; // User's original, correct token
+    const ACCESS_TOKEN = 'ANeTj3WEegFMYrW8Rqj-VbSQe7vPncMdF1Ow1ZZruk0';
     let heroSwiper, reelsSwiper;
 
-    // --- Function to load Site Logo ---
+    // --- FINAL CORRECTED LOGO FUNCTION ---
     async function loadLogo() {
         const logoContainer = document.querySelector('.nav-logo');
         const url = `https://cdn.contentful.com/spaces/${SPACE_ID}/environments/master/entries?access_token=${ACCESS_TOKEN}&content_type=siteLogo&include=1`;
@@ -20,11 +19,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const logoEntry = data.items[0]; 
 
-            if (logoEntry.fields.logoImage && logoEntry.fields.logoImage.sys) {
-                const logoId = logoEntry.fields.logoImage.sys.id;
-                const imageUrl = assets[logoId];
-                if (imageUrl) {
-                    logoContainer.innerHTML = `<img src="https:${imageUrl}" alt="M4SHOOTS Logo">`;
+            // FIX: Check if logoImage field is an array
+            if (logoEntry.fields.logoImage && Array.isArray(logoEntry.fields.logoImage)) {
+                const firstLogoLink = logoEntry.fields.logoImage[0]; // Get the first logo from the list
+                if (firstLogoLink && firstLogoLink.sys) {
+                    const logoId = firstLogoLink.sys.id;
+                    const imageUrl = assets[logoId];
+                    if (imageUrl) {
+                        logoContainer.innerHTML = `<img src="https:${imageUrl}" alt="M4SHOOTS Logo">`;
+                    }
                 }
             }
         } catch (error) {
@@ -135,12 +138,20 @@ document.addEventListener("DOMContentLoaded", () => {
     gsap.registerPlugin(ScrollTrigger);
     gsap.from(".main-title .title-wrapper", { yPercent: 105, duration: 0.8, ease: "power3.out", delay: 0.5 });
     gsap.from(".subtitle .title-wrapper", { yPercent: 105, duration: 0.8, ease: "power3.out", delay: 0.7 });
-    const animatedElements = gsap.utils.toArray('h2, #about p, .project-item, .skill-list span, .tool-list span, footer, .about-photos');
-    gsap.set(animatedElements, { opacity: 0, y: 50 });
+    const animatedElements = gsap.utils.toArray('h2, #about p, .project-item, .skill-list, .tool-list, footer, .about-photos');
+    gsap.set(animatedElements, { opacity: 0 });
     ScrollTrigger.batch(animatedElements, {
-        interval: 0.1, batchMax: 4,
-        onEnter: batch => gsap.to(batch, { opacity: 1, y: 0, stagger: 0.15, ease: "power2.out", duration: 0.8 }),
-        onLeaveBack: batch => gsap.set(batch, { opacity: 0, y: 50 }),
+        interval: 0.1,
+        onEnter: batch => gsap.to(batch, {
+            opacity: 1,
+            stagger: 0.1,
+            duration: 0.8,
+            overwrite: true
+        }),
+        onLeaveBack: batch => gsap.set(batch, {
+            opacity: 0,
+            overwrite: true
+        }),
     });
 
     // --- Start everything ---
@@ -149,4 +160,4 @@ document.addEventListener("DOMContentLoaded", () => {
     loadReels();
     loadProfilePhotos();
 });
-                    
+                          
