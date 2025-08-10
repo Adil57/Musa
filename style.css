@@ -2,44 +2,38 @@
 body { background: linear-gradient(125deg, #1a0238, #0b1a3b, #2c0b31, #02252e); background-size: 400% 400%; animation: gradientFlow 15s ease infinite; color: #e0e0e0; font-family: 'Inter', sans-serif; margin: 0; padding: 0; box-sizing: border-box; overflow-x: hidden; }
 @keyframes gradientFlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-/* --- UPDATED HEADER STYLING --- */
-#main-nav {
-    position: absolute;
-    top: 0;
-    left: 0;
+/* --- HEADER STYLING --- */
+#main-nav { position: absolute; top: 0; left: 0; width: 100%; z-index: 100; display: flex; justify-content: flex-start; align-items: center; padding: 10px 20px; box-sizing: border-box; background-color: rgba(240, 240, 240, 0.9); box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+.nav-left { display: flex; align-items: center; gap: 15px; }
+.nav-brand { font-family: 'Lobster', cursive; font-size: 2rem; color: #2c3e50; }
+.nav-logo img { height: 40px; width: auto; }
+
+/* --- HERO SLIDER with ASPECT RATIO FIX --- */
+.slider-container {
     width: 100%;
-    z-index: 100;
-    display: flex;
-    justify-content: flex-start; /* Align items to the left */
-    align-items: center;
-    padding: 10px 20px;
-    box-sizing: border-box;
-    background-color: rgba(240, 240, 240, 0.9); /* Light, slightly transparent background */
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    background-color: transparent;
+    margin-top: 60px; /* Space for header */
+    /* Default height for mobile */
+    height: 45vh;
 }
-.nav-left {
-    display: flex;
-    align-items: center;
-    gap: 15px; /* Space between logo and brand name */
-}
-.nav-brand {
-    font-family: 'Lobster', cursive;
-    font-size: 2rem;
-    color: #2c3e50; /* Dark color for text */
-}
-.nav-logo img {
-    height: 40px; /* Thoda chota logo */
-    width: auto;
+/* For desktop, use a 16:9 aspect ratio for landscape images */
+@media (min-width: 769px) {
+    .slider-container {
+        width: 100vw;
+        height: 56.25vw; /* 16:9 Aspect Ratio */
+        max-height: 80vh; /* Just so it doesn't get too tall on very wide screens */
+        position: relative;
+        left: 50%;
+        transform: translateX(-50%);
+    }
 }
 
-/* Hero Image Slider */
-.slider-container { height: 45vh; width: 100%; background-color: transparent; margin-top: 60px; /* Space for the new header */ }
-@media (min-width: 769px) { .slider-container { width: 100vw; position: relative; left: 50%; transform: translateX(-50%); } }
 .swiper { width: 100%; height: 100%; }
 .hero-swiper .swiper-slide { text-align: center; background: transparent; display: flex; justify-content: center; align-items: center; }
-.hero-swiper .swiper-slide img { display: block; width: 100%; height: 100%; object-fit: contain; will-change: transform; }
+.hero-swiper .swiper-slide img { display: block; width: 100%; height: 100%; object-fit: contain; }
 @media (min-width: 769px) { .hero-swiper .swiper-slide img { object-fit: cover; } }
 :root { --swiper-theme-color: #ffffff; --swiper-navigation-size: 30px; }
+
 
 /* Main Content Layout */
 main { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
@@ -109,4 +103,5 @@ footer { text-align: center; padding: 80px 20px; }
 .contact-button:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(159, 134, 255, 0.6); }
 .email-button { background-color: #4b4b4b; color: #ffffff; }
 .email-button:hover { background-color: #606060; }
-                           
+
+    
