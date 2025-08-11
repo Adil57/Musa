@@ -21,7 +21,8 @@ body { background: linear-gradient(125deg, #1a0238, #0b1a3b, #2c0b31, #02252e); 
     .slider-container {
         width: 100vw;
         height: 56.25vw; /* 16:9 Aspect Ratio */
-        max-height: 80vh; /* Just so it doesn't get too tall on very wide screens */
+        /* --- THE FIX IS HERE --- */
+        max-height: 90vh; /* 80vh se 90vh kar diya */
         position: relative;
         left: 50%;
         transform: translateX(-50%);
@@ -103,5 +104,4 @@ footer { text-align: center; padding: 80px 20px; }
 .contact-button:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(159, 134, 255, 0.6); }
 .email-button { background-color: #4b4b4b; color: #ffffff; }
 .email-button:hover { background-color: #606060; }
-
-    
+          
