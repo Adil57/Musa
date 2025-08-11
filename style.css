@@ -8,21 +8,19 @@ body { background: linear-gradient(125deg, #1a0238, #0b1a3b, #2c0b31, #02252e); 
 .nav-brand { font-family: 'Lobster', cursive; font-size: 2rem; color: #2c3e50; }
 .nav-logo img { height: 40px; width: auto; }
 
-/* --- HERO SLIDER with ASPECT RATIO FIX --- */
+/* --- HERO SLIDER with PERFECT ASPECT RATIO --- */
 .slider-container {
     width: 100%;
     background-color: transparent;
-    margin-top: 60px; /* Space for header */
-    /* Default height for mobile */
-    height: 45vh;
+    margin-top: 60px;
+    height: 50vh; /* Mobile ke liye height */
 }
-/* For desktop, use a 16:9 aspect ratio for landscape images */
+/* For desktop, use a 16:9 aspect ratio */
 @media (min-width: 769px) {
     .slider-container {
         width: 100vw;
-        height: 56.25vw; /* 16:9 Aspect Ratio */
-        /* --- THE FIX IS HERE --- */
-        max-height: 90vh; /* 80vh se 90vh kar diya */
+        height: auto; /* Height ko auto kar denge */
+        aspect-ratio: 16 / 9; /* Slider ka shape hamesha 16:9 rahega */
         position: relative;
         left: 50%;
         transform: translateX(-50%);
@@ -31,8 +29,14 @@ body { background: linear-gradient(125deg, #1a0238, #0b1a3b, #2c0b31, #02252e); 
 
 .swiper { width: 100%; height: 100%; }
 .hero-swiper .swiper-slide { text-align: center; background: transparent; display: flex; justify-content: center; align-items: center; }
-.hero-swiper .swiper-slide img { display: block; width: 100%; height: 100%; object-fit: contain; }
-@media (min-width: 769px) { .hero-swiper .swiper-slide img { object-fit: cover; } }
+.hero-swiper .swiper-slide img { 
+    display: block; 
+    width: 100%; 
+    height: 100%; 
+    /* Cover use karenge taaki image box ko poora bhare */
+    object-fit: cover; 
+}
+
 :root { --swiper-theme-color: #ffffff; --swiper-navigation-size: 30px; }
 
 
@@ -104,4 +108,4 @@ footer { text-align: center; padding: 80px 20px; }
 .contact-button:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(159, 134, 255, 0.6); }
 .email-button { background-color: #4b4b4b; color: #ffffff; }
 .email-button:hover { background-color: #606060; }
-          
+                             
