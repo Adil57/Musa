@@ -1,7 +1,7 @@
 Document.addEventListener("DOMContentLoaded", () => {
     const SPACE_ID = 'g9fqokvd9b7d';
     const ACCESS_TOKEN = 'ANeTj3WEegFMYrW8Rqj-VbSQe7vPncMdF1Ow1ZZruk0';
-    let heroSwiper, reelsSwiper, logosSwiper; // <-- YAHAN 'logosSwiper' ADD KIYA
+    let heroSwiper, reelsSwiper, logosSwiper; // 'logosSwiper' added
 
     // --- FINAL CORRECTED LOGO FUNCTION ---
     async function loadLogo() {
@@ -105,9 +105,11 @@ Document.addEventListener("DOMContentLoaded", () => {
     // --- START: NAYA LOGO LOADER FUNCTION ---
     async function loadLogos() {
         const swiperWrapper = document.querySelector('.logos-swiper .swiper-wrapper');
-        // IDs jo humne Contentful mein banaye hain:
-        const LOGO_CONTENT_TYPE_ID = 'logo';
-        const LOGO_FIELD_ID = 'logoImage';
+        
+        // --- YAHAN DEKHO: IDs UPDATE KAR DIYE HAIN ---
+        const LOGO_CONTENT_TYPE_ID = 'musaLogo'; // <-- YEH RAHA NAYA ID
+        const LOGO_FIELD_ID = 'logoImage';  // <-- Yeh field ID hai
+        // ---------------------------------------------
 
         const url = `https://cdn.contentful.com/spaces/${SPACE_ID}/environments/master/entries?access_token=${ACCESS_TOKEN}&content_type=${LOGO_CONTENT_TYPE_ID}&include=1`;
         
@@ -129,17 +131,14 @@ Document.addEventListener("DOMContentLoaded", () => {
             data.items.forEach(item => {
                 const logoLinks = item.fields[LOGO_FIELD_ID];
                 
-                // Yeh check karega ki aapka field "multiple files" accept karta hai ya nahi
                 if (logoLinks && Array.isArray(logoLinks)) {
                     logoLinks.forEach((link, index) => {
                         if (link && link.sys && assets[link.sys.id]) {
                             const imageUrl = 'https:' + assets[link.sys.id];
-                            // Slide ke andar hi image daal rahe hain
                             slidesHTML += `<div class="swiper-slide"><img src="${imageUrl}" alt="Created Logo ${index + 1}"></div>`;
                         }
                     });
                 } else if (logoLinks && logoLinks.sys && assets[logoLinks.sys.id]) {
-                    // Agar sirf ek logo upload karne ka option hai
                     const imageUrl = 'https:' + assets[logoLinks.sys.id];
                     slidesHTML += `<div class="swiper-slide"><img src="${imageUrl}" alt="Created Logo"></div>`;
                 }
@@ -147,7 +146,7 @@ Document.addEventListener("DOMContentLoaded", () => {
             
             if (slidesHTML) { 
                 swiperWrapper.innerHTML = slidesHTML; 
-                initializeLogosSwiper(); // <-- Slider ko chalu karega
+                initializeLogosSwiper(); // Slider ko chalu karega
             } else {
                 console.warn("Logos found but image links were missing.");
             }
@@ -196,11 +195,11 @@ Document.addEventListener("DOMContentLoaded", () => {
     function initializeLogosSwiper() {
         logosSwiper = new Swiper('.logos-swiper', {
             effect: 'slide',
-            slidesPerView: 'auto', // CSS mein define ki hui width use karega
-            spaceBetween: 30, // Slides ke beech ka gap
-            centeredSlides: true, // Active slide center mein rahegi
-            loop: document.querySelectorAll('.logos-swiper .swiper-slide').length > 2, // Loop tabhi chalega jab 2 se zyada logo honge
-            navigation: { // Next/Prev buttons
+            slidesPerView: 'auto', 
+            spaceBetween: 30, 
+            centeredSlides: true, 
+            loop: document.querySelectorAll('.logos-swiper .swiper-slide').length > 2, 
+            navigation: { 
                 nextEl: '.logos-swiper .swiper-button-next',
                 prevEl: '.logos-swiper .swiper-button-prev',
             }
@@ -213,8 +212,7 @@ Document.addEventListener("DOMContentLoaded", () => {
     gsap.from(".main-title .title-wrapper", { yPercent: 105, duration: 0.8, ease: "power3.out", delay: 0.5 });
     gsap.from(".subtitle .title-wrapper", { yPercent: 105, duration: 0.8, ease: "power3.out", delay: 0.7 });
     
-    // NAYE LOGOS SECTION KO BHI ANIMATION MEIN ADD KARNA HOGA
-    const animatedElements = gsap.utils.toArray('h2, #about p, .project-item, .skill-list, .tool-list, footer, .about-photos, .logos-swiper'); // <-- YAHAN '.logos-swiper' ADD KIYA
+    const animatedElements = gsap.utils.toArray('h2, #about p, .project-item, .skill-list, .tool-list, footer, .about-photos, .logos-swiper'); // '.logos-swiper' added
     
     gsap.set(animatedElements, { opacity: 0 });
     ScrollTrigger.batch(animatedElements, {
@@ -236,5 +234,5 @@ Document.addEventListener("DOMContentLoaded", () => {
     loadSliderImages();
     loadReels();
     loadProfilePhotos();
-    loadLogos(); // <-- YEH NAYI LINE ADD KI HAI
+    loadLogos(); // <-- Naya function yahan call ho raha hai
 });
