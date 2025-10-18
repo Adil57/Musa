@@ -35,6 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // --- SLIDER IMAGES FUNCTION (FIXED) ---
     async function loadSliderImages() {
         const swiperWrapper = document.querySelector('.hero-swiper .swiper-wrapper');
         const url = `https://cdn.contentful.com/spaces/${SPACE_ID}/environments/master/entries?access_token=${ACCESS_TOKEN}&content_type=sliderImage&include=1`;
@@ -47,7 +48,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (item.fields.photo && Array.isArray(item.fields.photo)) {
                     item.fields.photo.forEach(photoLink => {
                         if (photoLink && photoLink.sys && assets[photoLink.sys.id]) {
-                            slidesHTML += `<div class="swiper-slide"><img src=":${assets[photoLink.sys.id]}" alt="Slider Image"></div>`;
+                            // --- YEH LINE FIX KAR DI HAI (https:) ---
+                            slidesHTML += `<div class="swiper-slide"><img src="https:${assets[photoLink.sys.id]}" alt="Slider Image"></div>`;
                         }
                     });
                 }
@@ -55,6 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (slidesHTML) { swiperWrapper.innerHTML = slidesHTML; initializeHeroSwiper(); }
         } catch (error) { console.error("Error loading hero images:", error); }
     }
+    // --- END OF FIXED FUNCTION ---
 
     async function loadReels() {
         const swiperWrapper = document.querySelector('.reels-swiper .swiper-wrapper');
@@ -106,8 +109,8 @@ document.addEventListener("DOMContentLoaded", () => {
     async function loadLogos() {
         const swiperWrapper = document.querySelector('.logos-swiper .swiper-wrapper');
         
-        // --- YEH ID FIX KAR DIYA HAI (musalogo all small) ---
-        const LOGO_CONTENT_TYPE_ID = 'musalogo'; 
+        // --- YAHAN AAPKO APNA ASLI ID DAALNA HAI ---
+        const LOGO_CONTENT_TYPE_ID = 'YOUR_ID_HERE'; // <-- Abhi ke liye 'musaLogo' ya 'musalogo' mat daalo
         const LOGO_FIELD_ID = 'logoImage';  
  
         const url = `https://cdn.contentful.com/spaces/${SPACE_ID}/environments/master/entries?access_token=${ACCESS_TOKEN}&content_type=${LOGO_CONTENT_TYPE_ID}&include=1`;
@@ -117,8 +120,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const data = await response.json();
             
             if (!data.items || data.items.length === 0 || !data.includes || !data.includes.Asset) {
-                // Yeh warning ab console mein aayegi agar 'musalogo' bhi nahi chala
-                console.warn("No logos found. Check Content Type ID ('musalogo') and API Key permissions.");
+                console.warn(`No logos found. Check Content Type ID ('${LOGO_CONTENT_TYPE_ID}')`);
                 return;
             }
 
@@ -163,7 +165,7 @@ document.addEventListener("DOMContentLoaded", () => {
     
     function initializeReelsSwiper() {
         reelsSwiper = new Swiper('.reels-swiper', {
-            effect: 'slide', slidesPerView: 'auto', spaceBetween: 30, centeredSlides: true, 
+            effect: 'slide', slidesView: 'auto', spaceBetween: 30, centeredSlides: true, 
             loop: document.querySelectorAll('.reels-swiper .swiper-slide').length > 2,
             navigation: { nextEl: '.reels-swiper .swiper-button-next', prevEl: '.reels-swiper .swiper-button-prev' }
         });
@@ -210,7 +212,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     gsap.registerPlugin(ScrollTrigger);
     gsap.from(".main-title .title-wrapper", { yPercent: 105, duration: 0.8, ease: "power3.out", delay: 0.5 });
-    // YEH LINE BHI FIX KAR DI HAI (.subtitle .title-wrapper)
     gsap.from(".subtitle .title-wrapper", { yPercent: 105, duration: 0.8, ease: "power3.out", delay: 0.7 });
     
     const animatedElements = gsap.utils.toArray('h2, #about p, .project-item, .skill-list, .tool-list, footer, .about-photos, .logos-swiper'); // '.logos-swiper' added
@@ -237,3 +238,4 @@ document.addEventListener("DOMContentLoaded", () => {
     loadProfilePhotos();
     loadLogos(); // <-- Naya function yahan call ho raha hai
 });
+                
