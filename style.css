@@ -104,3 +104,58 @@ footer { text-align: center; padding: 80px 20px; }
 .email-button { background-color: #4b4b4b; color: #ffffff; }
 .email-button:hover { background-color: #606060; }
 
+/* --- START: LOGO SLIDER STYLING --- */
+#logos {
+    /* Use 100vw width like 'My Work' section */
+    padding-top: 20px; 
+    width: 100vw; 
+    position: relative; 
+    left: 50%; 
+    transform: translateX(-50%);
+}
+.logos-swiper {
+    width: 100%;
+    padding: 20px 0;
+    overflow: visible; /* To show shadows and button overflow */
+}
+.logos-swiper .swiper-slide {
+    /* Square-ish card for logos */
+    width: 280px; 
+    height: 220px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.05); /* Lighter bg to show logos */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: transform 0.4s ease, background-color 0.4s ease;
+    will-change: transform;
+    display: flex; /* Center the logo inside */
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+.logos-swiper .swiper-slide:hover {
+    transform: scale(1.05);
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.15);
+}
+.logos-swiper .swiper-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* 'contain' is best for logos */
+}
+.logos-swiper .swiper-button-prev, 
+.logos-swiper .swiper-button-next {
+    color: #fff;
+    background-color: rgba(0,0,0,0.3);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+}
+.logos-swiper .swiper-button-prev::after, 
+.logos-swiper .swiper-button-next::after {
+    font-size: 20px;
+}
+.logos-swiper .swiper-button-prev { left: 10px; }
+.logos-swiper .swiper-button-next { right: 10px; }
+/* --- END: LOGO SLIDER STYLING --- */
+   
