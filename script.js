@@ -109,18 +109,26 @@ document.addEventListener("DOMContentLoaded", () => {
     async function loadLogos() {
         const swiperWrapper = document.querySelector('.logos-swiper .swiper-wrapper');
         
-        // --- YAHAN AAPKO APNA ASLI ID DAALNA HAI ---
-        const LOGO_CONTENT_TYPE_ID = 'YOUR_ID_HERE'; // <-- Abhi ke liye 'musaLogo' ya 'musalogo' mat daalo
+        // --- YEH RAHA AAPKA ID, BILKUL WAISE HI JAISE AAPNE BATAYA ---
+        const LOGO_CONTENT_TYPE_ID = 'musaLogo'; 
         const LOGO_FIELD_ID = 'logoImage';  
  
         const url = `https://cdn.contentful.com/spaces/${SPACE_ID}/environments/master/entries?access_token=${ACCESS_TOKEN}&content_type=${LOGO_CONTENT_TYPE_ID}&include=1`;
         
         try {
             const response = await fetch(url);
-            const data = await response.json();
+            // Sirf response ka status check karenge, data ko baad mein parse karenge
+            if (!response.ok) {
+                // Agar response OK nahi hai (jaise 400 ya 404 error)
+                console.error(`Error fetching logos. Status: ${response.status}. Check API Key permissions for '${LOGO_CONTENT_TYPE_ID}'.`);
+                // Yahan se aage nahi badhenge
+                return;
+            }
+
+            const data = await response.json(); // Ab safely data parse karenge
             
             if (!data.items || data.items.length === 0 || !data.includes || !data.includes.Asset) {
-                console.warn(`No logos found. Check Content Type ID ('${LOGO_CONTENT_TYPE_ID}')`);
+                console.warn(`No logo items found for '${LOGO_CONTENT_TYPE_ID}'. Make sure entries are published.`);
                 return;
             }
 
@@ -165,7 +173,7 @@ document.addEventListener("DOMContentLoaded", () => {
     
     function initializeReelsSwiper() {
         reelsSwiper = new Swiper('.reels-swiper', {
-            effect: 'slide', slidesView: 'auto', spaceBetween: 30, centeredSlides: true, 
+            effect: 'slide', slidesPerView: 'auto', spaceBetween: 30, centeredSlides: true, 
             loop: document.querySelectorAll('.reels-swiper .swiper-slide').length > 2,
             navigation: { nextEl: '.reels-swiper .swiper-button-next', prevEl: '.reels-swiper .swiper-button-prev' }
         });
@@ -238,4 +246,4 @@ document.addEventListener("DOMContentLoaded", () => {
     loadProfilePhotos();
     loadLogos(); // <-- Naya function yahan call ho raha hai
 });
-                
+                    
