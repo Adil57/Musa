@@ -1,7 +1,7 @@
-document.addEventListener("DOMContentLoaded", () => {
+Document.addEventListener("DOMContentLoaded", () => {
     const SPACE_ID = 'g9fqokvd9b7d';
     const ACCESS_TOKEN = 'ANeTj3WEegFMYrW8Rqj-VbSQe7vPncMdF1Ow1ZZruk0';
-    let heroSwiper, reelsSwiper;
+    let heroSwiper, reelsSwiper, logosSwiper; // <-- YAHAN 'logosSwiper' ADD KIYA
 
     // --- FINAL CORRECTED LOGO FUNCTION ---
     async function loadLogo() {
@@ -102,9 +102,66 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (error) { console.error("Error loading profile photos:", error); }
     }
 
+    // --- START: NAYA LOGO LOADER FUNCTION ---
+    async function loadLogos() {
+        const swiperWrapper = document.querySelector('.logos-swiper .swiper-wrapper');
+        // IDs jo humne Contentful mein banaye hain:
+        const LOGO_CONTENT_TYPE_ID = 'logo';
+        const LOGO_FIELD_ID = 'logoImage';
+
+        const url = `https://cdn.contentful.com/spaces/${SPACE_ID}/environments/master/entries?access_token=${ACCESS_TOKEN}&content_type=${LOGO_CONTENT_TYPE_ID}&include=1`;
+        
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            
+            if (!data.items || data.items.length === 0 || !data.includes || !data.includes.Asset) {
+                console.warn("No logos found or error in Contentful data.");
+                return;
+            }
+
+            const assets = data.includes.Asset.reduce((acc, asset) => {
+                acc[asset.sys.id] = asset.fields.file.url;
+                return acc;
+            }, {});
+
+            let slidesHTML = '';
+            data.items.forEach(item => {
+                const logoLinks = item.fields[LOGO_FIELD_ID];
+                
+                // Yeh check karega ki aapka field "multiple files" accept karta hai ya nahi
+                if (logoLinks && Array.isArray(logoLinks)) {
+                    logoLinks.forEach((link, index) => {
+                        if (link && link.sys && assets[link.sys.id]) {
+                            const imageUrl = 'https:' + assets[link.sys.id];
+                            // Slide ke andar hi image daal rahe hain
+                            slidesHTML += `<div class="swiper-slide"><img src="${imageUrl}" alt="Created Logo ${index + 1}"></div>`;
+                        }
+                    });
+                } else if (logoLinks && logoLinks.sys && assets[logoLinks.sys.id]) {
+                    // Agar sirf ek logo upload karne ka option hai
+                    const imageUrl = 'https:' + assets[logoLinks.sys.id];
+                    slidesHTML += `<div class="swiper-slide"><img src="${imageUrl}" alt="Created Logo"></div>`;
+                }
+            });
+            
+            if (slidesHTML) { 
+                swiperWrapper.innerHTML = slidesHTML; 
+                initializeLogosSwiper(); // <-- Slider ko chalu karega
+            } else {
+                console.warn("Logos found but image links were missing.");
+            }
+        } catch (error) {
+            console.error("Error loading logos:", error);
+        }
+    }
+    // --- END: NAYA LOGO LOADER FUNCTION ---
+
+
     function initializeHeroSwiper() {
         heroSwiper = new Swiper('.hero-swiper', { loop: document.querySelectorAll('.hero-swiper .swiper-slide').length > 1, autoplay: { delay: 3000, disableOnInteraction: false }, speed: 600, pagination: { el: '.swiper-pagination', clickable: true }, navigation: { nextEl: '.hero-swiper .swiper-button-next', prevEl: '.hero-swiper .swiper-button-prev' } });
     }
+    
     function initializeReelsSwiper() {
         reelsSwiper = new Swiper('.reels-swiper', {
             effect: 'slide', slidesPerView: 'auto', spaceBetween: 30, centeredSlides: true, 
@@ -135,10 +192,30 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    // --- START: NAYA LOGO SLIDER INITIALIZER ---
+    function initializeLogosSwiper() {
+        logosSwiper = new Swiper('.logos-swiper', {
+            effect: 'slide',
+            slidesPerView: 'auto', // CSS mein define ki hui width use karega
+            spaceBetween: 30, // Slides ke beech ka gap
+            centeredSlides: true, // Active slide center mein rahegi
+            loop: document.querySelectorAll('.logos-swiper .swiper-slide').length > 2, // Loop tabhi chalega jab 2 se zyada logo honge
+            navigation: { // Next/Prev buttons
+                nextEl: '.logos-swiper .swiper-button-next',
+                prevEl: '.logos-swiper .swiper-button-prev',
+            }
+        });
+    }
+    // --- END: NAYA LOGO SLIDER INITIALIZER ---
+
+
     gsap.registerPlugin(ScrollTrigger);
     gsap.from(".main-title .title-wrapper", { yPercent: 105, duration: 0.8, ease: "power3.out", delay: 0.5 });
     gsap.from(".subtitle .title-wrapper", { yPercent: 105, duration: 0.8, ease: "power3.out", delay: 0.7 });
-    const animatedElements = gsap.utils.toArray('h2, #about p, .project-item, .skill-list, .tool-list, footer, .about-photos');
+    
+    // NAYE LOGOS SECTION KO BHI ANIMATION MEIN ADD KARNA HOGA
+    const animatedElements = gsap.utils.toArray('h2, #about p, .project-item, .skill-list, .tool-list, footer, .about-photos, .logos-swiper'); // <-- YAHAN '.logos-swiper' ADD KIYA
+    
     gsap.set(animatedElements, { opacity: 0 });
     ScrollTrigger.batch(animatedElements, {
         interval: 0.1,
@@ -159,5 +236,5 @@ document.addEventListener("DOMContentLoaded", () => {
     loadSliderImages();
     loadReels();
     loadProfilePhotos();
+    loadLogos(); // <-- YEH NAYI LINE ADD KI HAI
 });
-                          
