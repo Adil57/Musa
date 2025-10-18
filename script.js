@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (item.fields.photo && Array.isArray(item.fields.photo)) {
                     item.fields.photo.forEach(photoLink => {
                         if (photoLink && photoLink.sys && assets[photoLink.sys.id]) {
-                            slidesHTML += `<div class="swiper-slide"><img src="https:${assets[photoLink.sys.id]}" alt="Slider Image"></div>`;
+                            slidesHTML += `<div class="swiper-slide"><img src=":${assets[photoLink.sys.id]}" alt="Slider Image"></div>`;
                         }
                     });
                 }
@@ -106,11 +106,10 @@ document.addEventListener("DOMContentLoaded", () => {
     async function loadLogos() {
         const swiperWrapper = document.querySelector('.logos-swiper .swiper-wrapper');
         
-        // --- YAHAN DEKHO: IDs UPDATE KAR DIYE HAIN ---
-        const LOGO_CONTENT_TYPE_ID = 'musaLogo'; // <-- YEH RAHA NAYA ID
-        const LOGO_FIELD_ID = 'logoImage';  // <-- Yeh field ID hai
-        // ---------------------------------------------
-
+        // --- YEH ID FIX KAR DIYA HAI (musalogo all small) ---
+        const LOGO_CONTENT_TYPE_ID = 'musalogo'; 
+        const LOGO_FIELD_ID = 'logoImage';  
+ 
         const url = `https://cdn.contentful.com/spaces/${SPACE_ID}/environments/master/entries?access_token=${ACCESS_TOKEN}&content_type=${LOGO_CONTENT_TYPE_ID}&include=1`;
         
         try {
@@ -118,7 +117,8 @@ document.addEventListener("DOMContentLoaded", () => {
             const data = await response.json();
             
             if (!data.items || data.items.length === 0 || !data.includes || !data.includes.Asset) {
-                console.warn("No logos found or error in Contentful data.");
+                // Yeh warning ab console mein aayegi agar 'musalogo' bhi nahi chala
+                console.warn("No logos found. Check Content Type ID ('musalogo') and API Key permissions.");
                 return;
             }
 
@@ -210,6 +210,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     gsap.registerPlugin(ScrollTrigger);
     gsap.from(".main-title .title-wrapper", { yPercent: 105, duration: 0.8, ease: "power3.out", delay: 0.5 });
+    // YEH LINE BHI FIX KAR DI HAI (.subtitle .title-wrapper)
     gsap.from(".subtitle .title-wrapper", { yPercent: 105, duration: 0.8, ease: "power3.out", delay: 0.7 });
     
     const animatedElements = gsap.utils.toArray('h2, #about p, .project-item, .skill-list, .tool-list, footer, .about-photos, .logos-swiper'); // '.logos-swiper' added
